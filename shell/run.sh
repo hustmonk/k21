@@ -1,5 +1,5 @@
 set -e
-command="1"
+command="2"
 
 function valid() {
     echo "valid"
@@ -9,7 +9,7 @@ function valid() {
 }
 function sub() {
     echo "sub"
-    python features.py ../data/test/log_test.csv ../data/test/enrollment_test.csv test.txt
+    nohup python features.py ../data/test/log_test.csv ../data/test/enrollment_test.csv test.txt &
     python features.py ../data/train/log_train.csv ../data/train/enrollment_train.csv train.txt
     python learn.py train.txt test.txt sub.csv 0
 }

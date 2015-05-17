@@ -7,6 +7,7 @@
 
 __revision__ = '0.1'
 from weekend import *
+from common import *
 week = Week()
 class CourseTimeInfo:
     def __init__(self):
@@ -28,7 +29,7 @@ class CourseTimeInfo:
         for i in range(len(infos)):
             if timestampe < infos[i]:
                 return i
-        return 9
+        return CIDX_VEC_NUM-1
     
     def get_course_id(self, id):
         return self.course_id.get(id)

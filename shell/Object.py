@@ -7,6 +7,7 @@
 
 __revision__ = '0.1'
 from weekend import *
+from common import *
 week = Week()
 
 class Obj:
@@ -65,8 +66,8 @@ class Obj:
         if timestampe < start:
             return 0
         elif timestampe > end:
-            return 9
-        return int((timestampe - start) * 8 / (end - start)) + 1
+            return CIDX_VEC_NUM-1
+        return int((timestampe - start) * (CIDX_VEC_NUM - 2) / (end - start)) + 1
 
 
 if __name__ == "__main__":

@@ -22,7 +22,10 @@ class Week:
         return t1
 
     def times(self, timestr):
-        t1=time.mktime(time.strptime(timestr,'%Y-%m-%dT%H:%M:%S'))
+        if timestr.find("T")>0:
+            t1=time.mktime(time.strptime(timestr,'%Y-%m-%dT%H:%M:%S'))
+        else:
+            t1=time.mktime(time.strptime(timestr,'%Y-%m-%d'))
         return t1
 
     def stypetime(self, times):

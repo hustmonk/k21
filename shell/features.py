@@ -15,6 +15,7 @@ from label import *
 from weekend import *
 from coursetime import *
 from common import *
+from userinfo import *
 import math
 week = Week()
 coursetimeinfo = CourseTimeInfo()
@@ -26,6 +27,7 @@ enrollment_train = Enrollment(enrollment_filename)
 enrollment = Enrollment("../data/merge/enrollment.csv")
 obj = Obj()
 label = Label()
+userinfo = Userinfo()
 ids = enrollment_train.ids
 import math
 def transfer(v):
@@ -35,11 +37,10 @@ fout = open(featrue_filename,"w")
 ccc = 0
 for id in ids:
     ccc += 1
-    if ccc % 10000 == 0:
+    if ccc % 5000 == 0:
         print ccc
     y = label.get(id)
     infos = log.enrollment_loginfo.get(id, [])
-    f = [0] * 179
     username, course_id = enrollment.enrollment_info.get(id)
 
     #time,source,event,o
@@ -47,21 +48,19 @@ for id in ids:
     #event:access,discussion,nagivate,page_close,problem,video,wiki
     #category:video,vertical,static_tab,sequential,problem,peergrading,outlink,html,discussion,dictation,course_info,course,combinedopenended,chapter,about
     #time:2014-06-13T09:52:49
-    browser = 0
-    server = 0
+    course_id_vec = [0] * COURSE_VEC_NUM
+    course_id_vec[coursetimeinfo.get_course_id(course_id)] = 1
+
     event_count = [0] * EVENT_VEC_NUM
     category_count = [0] * CATEGORY_VEC_NUM
     weekday_count = [0] * WEEKDAY_VEC_NUM
     hour_count = [0] * HOUR_VEC_NUM
     cidx_count = [0] * CIDX_VEC_NUM
-    cidx_by_stat_count = [0] * CIDX_BY_STAT_VECT_NUM
-    last_cidx_count = [0] * LAST_CIDX_VEC_NUM
-    course_id_vec = [0] * COURSE_VEC_NUM
-    course_id_vec[coursetimeinfo.get_course_id(course_id)] = 1
-    is_last_vec = [0] * IS_LAST_VEC_NUM #0 not last, 1-5, 6 more than 5
+    cidx_by_stat_count = [0] * CIDX_VEC_NUM
     days = set()
     info_by_day = {}
-    last_cidx = 0
+    browser = 0
+    server = 0
     for info in infos:
         day,timehms = info[0].split("T")
         if day not in info_by_day:
@@ -100,11 +99,11 @@ for id in ids:
         cidx = obj.get_index(course_id, week.times(info[0]))
         cidx_count[cidx] = cidx_count[cidx] + 1
         info_by_day[day]["cidx"] = cidx
-        if cidx > last_cidx:
-            last_cidx = cidx
 
         cidx_by_stat = coursetimeinfo.get_index(course_id, week.times(info[0]))
         cidx_by_stat_count[cidx_by_stat] = cidx_by_stat_count[cidx_by_stat] + 1
+    days = sorted(days)
+
     day_event_count = [0] * EVENT_VEC_NUM
     day_category_count = [0] * CATEGORY_VEC_NUM
     day_weekday_count = [0] * WEEKDAY_VEC_NUM
@@ -119,16 +118,54 @@ for id in ids:
         day_hour_count[info["hour"]] = day_hour_count[info["hour"]] + 1
         day_cidx_count[info["cidx"]] = day_cidx_count[info["cidx"]] + 1
 
-    last_cidx_count[last_cidx] = last_cidx_count[last_cidx] + 1
+    last_day_event_count = [0] * EVENT_VEC_NUM
+    last_day_category_count = [0] * CATEGORY_VEC_NUM
+    last_day_weekday_count = [0] * WEEKDAY_VEC_NUM
+    last_day_hour_count = [0] * HOUR_VEC_NUM
+    last_cidx_count = [0] * CIDX_VEC_NUM
+    last_cidx_by_stat_count = [0] * CIDX_VEC_NUM
+    last_browser = 0
+    last_server = 0
+    for info in infos:
+        day,timehms = info[0].split("T")
+        if day != days[-1]:
+            continue
+        if info[1] == "browser":
+            last_browser += 1
+        else:
+            last_server += 1
+        mod_info = obj.module_info.get(info[3])
+        if mod_info != None:
+            category = mod_info[1]
+            category_idx = get_category_idx(category)
+            last_day_category_count[category_idx] = last_day_category_count[category_idx] + 1
+        else:
+            last_day_category_count[16] = last_day_category_count[16] + 1
+
+        event_idx = get_event_idx(info[2])
+        last_day_event_count[event_idx] = last_day_event_count[event_idx] + 1
+
+        weekday = week.get(day)
+        last_day_weekday_count[weekday] = last_day_weekday_count[weekday] + 1
+
+        hour = int(timehms[:2]) / 2
+        last_day_hour_count[hour] = last_day_hour_count[hour] + 1
+
+        cidx = obj.get_index(course_id, week.times(info[0]))
+        cidx_by_stat = coursetimeinfo.get_index(course_id, week.times(info[0]))
+        last_cidx_count[cidx] = 1
+        last_cidx_by_stat_count[cidx_by_stat] = 1
+    is_last_vec = [0] * IS_LAST_VEC_NUM #0 not last, 1-5, 6 more than 5
     if len(days) < 2:
         is_last_vec[0] = 1
     else:
-        days = sorted(days)
         diff = week.diff(days[-1],days[-2])
-        if diff > 5:
-            is_last_vec[6] = 1
+        if diff > (IS_LAST_VEC_NUM-1):
+            is_last_vec[IS_LAST_VEC_NUM-1] = 1
         else:
             is_last_vec[diff] = 1
+    use_vec = userinfo.get_features(username, course_id)
+    f = [0] * 248
     f[0] = transfer(len(infos))
     f[1] = transfer(len(enrollment.course_info.get(course_id, [])))
     f[2] = transfer(len(enrollment.user_info.get(username, [])))
@@ -136,8 +173,10 @@ for id in ids:
     f[4] = transfer(server)
     f[5] = (browser+3.1)/(float(len(infos))+6.5)
     f[6] = transfer(len(days))
-    fv = [event_count,category_count,weekday_count,hour_count,cidx_count,course_id_vec,last_cidx_count,is_last_vec,day_event_count,day_category_count,day_weekday_count,day_hour_count,day_cidx_count,cidx_by_stat_count]
-    start = 7
+    f[7] = transfer(last_browser)
+    f[8] = transfer(last_server)
+    fv = [event_count,category_count,weekday_count,hour_count,cidx_count,course_id_vec,last_cidx_count,is_last_vec,day_event_count,day_category_count,day_weekday_count,day_hour_count,day_cidx_count,cidx_by_stat_count,last_day_event_count,last_day_category_count,last_day_weekday_count,last_day_hour_count, last_cidx_by_stat_count, use_vec]
+    start = 9
     for vs in fv:
         for (i, v) in enumerate(vs):
             f[start+i] = transfer(v)

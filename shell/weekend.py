@@ -12,6 +12,15 @@ class Week:
         t1=time.mktime(time.strptime(day,'%Y-%m-%d'))
         return int(time.strftime("%w",time.gmtime(int(t1) + 8*60*60)))
 
+    def diff(self, day1, day2):
+        d1 = self.timestamp(day1)
+        d2 = self.timestamp(day2)
+        return int((d1-d2)/(self.timestamp("2014-06-07") - self.timestamp("2014-06-06")))
+
+    def timestamp(self, timestr):
+        t1=time.mktime(time.strptime(timestr,'%Y-%m-%d'))
+        return t1
+
     def times(self, timestr):
         t1=time.mktime(time.strptime(timestr,'%Y-%m-%dT%H:%M:%S'))
         return t1
@@ -28,3 +37,6 @@ if __name__ == "__main__":
     print week.times("2015-05-16T07:08:09")
     print type(week.times("2015-05-16T07:08:09"))
     print week.stypetime(week.times("2015-05-16T07:08:09"))
+    print week.diff("2015-05-16","2015-05-14")
+    print week.diff('2014-07-11', '2014-07-05')
+    print week.timestamp("2014-06-07") -  week.timestamp("2014-06-06")

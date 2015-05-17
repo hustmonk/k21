@@ -32,8 +32,8 @@ class Obj:
         self.course_start_end = {}
         for (k,v) in self.course_timeinfo.items():
             v = sorted(v)
-            start = v[0]
-            end = v[-1]
+            start = v[0] - 86400 * 10
+            end = v[-1] + 86400 * 3
             #print v
             self.course_start_end[k] = [start, end]
         self.course_root_module = {}

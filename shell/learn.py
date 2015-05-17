@@ -43,6 +43,12 @@ clf.fit(X_train, y_train)
 #preds = clf.predict(X_test)
 preds = clf.predict_proba(X_test)
 logger.info( clf.coef_)
+
+import pickle
+modelFileSave = open('valid.model', 'wb')
+pickle.dump(clf, modelFileSave)
+modelFileSave.close()
+
 if is_valid:
     roc_auc = metrics.roc_auc_score(y_test, preds[:,1])
     logger.info(roc_auc)

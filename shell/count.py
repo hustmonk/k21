@@ -15,10 +15,12 @@ drop = []
 for i in range(len(header)):
     counts.append({})
     drop.append({})
+cc = 0
 for line in fin:
     arr = line.strip().split(",")
+    cc += 1
     label = arr[0]
-    for i in range(1, len(header)):
+    for i in range(2, len(header)):
         key = arr[i]
 
         counts[i][key] = counts[i].get(key, 0) + 1
@@ -26,6 +28,6 @@ for line in fin:
             drop[i][key] = drop[i].get(key, 0) + 1
 
 for i in range(1, len(header)):
-    #print header[i],len(counts[i]),"x"
-    for (k,v) in counts[i].items():
-        print k,v,drop[i].get(k, 0) / float(v)
+    print "TOTAL:",i,len(counts[i])
+    for (k,v) in sorted(counts[i].items(), key=lambda x:x[1]):
+        print i,k,v,v/float(cc),drop[i].get(k, 0) / float(v)

@@ -40,8 +40,9 @@ scores = cross_validation.cross_val_score(clf, X_train, y_train, cv=5)
 logger.info(scores)
 print scores
 clf.fit(X_train, y_train)
-preds = clf.predict(X_test)
+#preds = clf.predict(X_test)
 preds = clf.predict_proba(X_test)
+logger.info( clf.coef_)
 if is_valid:
     roc_auc = metrics.roc_auc_score(y_test, preds[:,1])
     logger.info(roc_auc)

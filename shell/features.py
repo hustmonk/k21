@@ -13,11 +13,12 @@ from enrollment import *
 from Object import *
 from label import *
 from weekend import *
+from coursetime import *
 week = Week()
+coursetimeinfo = CourseTimeInfo()
 log_filename = sys.argv[1]
 enrollment_filename = sys.argv[2]
 featrue_filename = sys.argv[3]
-
 log = Log(log_filename)
 enrollment_train = Enrollment(enrollment_filename)
 enrollment = Enrollment("../data/merge/enrollment.csv")
@@ -33,10 +34,10 @@ category_key = "video,vertical,static_tab,sequential,problem,peergrading,outlink
 for id in ids:
     y = label.get(id)
     infos = log.enrollment_loginfo.get(id, [])
-    f = [0] * 37
+    f = [0] * 99
     f[0] = transfer(len(infos))
     username, course_id = enrollment.enrollment_info.get(id)
-    f[1] = transfer(len(enrollment.course_info.get(course_id, [])))
+    #f[1] = transfer(len(enrollment.course_info.get(course_id, [])))
     f[2] = transfer(len(enrollment.user_info.get(username, [])))
 
     #time,source,event,o
@@ -49,6 +50,11 @@ for id in ids:
     event_count = [0] * 7
     category_count = [0] * 17
     weekday_count = [0] * 7
+    hour_count = [0] * 12
+    cidx_count = [0] * 10
+    course_id_vec = [0] * 39
+    course_id_vec[coursetimeinfo.get_course_id(course_id)] = 1
+    days = set()
     for info in infos:
         if info[1] == "browser":
             browser += 1
@@ -67,8 +73,14 @@ for id in ids:
             if info[2] == event_key[i]:
                 event_count[i] = event_count[i] + 1
         day,timehms = info[0].split("T")
+        days.add(day)
         weekday = week.get(day)
         weekday_count[weekday] = weekday_count[weekday] + 1
+        hour = int(timehms[:2]) / 2
+        hour_count[hour] = hour_count[hour] + 1
+        
+        cidx = obj.get_index(course_id, week.times(info[0]))
+        cidx_count[cidx] = cidx_count[cidx] + 1
     f[3] = transfer(browser)
     f[4] = transfer(server)
     f[5] = (browser+3.1)/(float(len(infos))+6.5)
@@ -78,6 +90,12 @@ for id in ids:
         f[13+i] = transfer(category_count[i])
     for i in range(7):
         f[30+i] = transfer(weekday_count[i])
-
+    for i in range(12):
+        f[37+i] = transfer(hour_count[i])
+    for i in range(10):
+        f[49+i] = transfer(cidx_count[i])
+    for i in range(39):
+        f[59+i] = transfer(course_id_vec[i])
+    f[98] = transfer(len(days))
 
     fout.write("%s,%s,%s\n" % (y, id, ",".join(["%.2f" % k for k in f])))

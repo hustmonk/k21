@@ -1,3 +1,4 @@
+set -e
 valid="0"
 sub="1"
 

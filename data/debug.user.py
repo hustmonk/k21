@@ -35,8 +35,9 @@ for line in open("../shell/train2.txt"):
     arr = line.split(",")
     if arr[1] == sys.argv[1]:
         feature = [float(k) for k in arr[2:]]
-        print feature, clf.coef_
-        print feature, type(clf.coef_)
+        #print feature, clf.coef_
+        #print feature, type(clf.coef_)
+        print len(feature)
         for i in range(len(feature)):
             x = feature[i] * clf.coef_[0, i]
             print feature[i], clf.coef_[0, i],feature[i] * clf.coef_[0, i]

@@ -13,6 +13,7 @@ class CourseTimeInfo:
     def __init__(self):
         self.timeinfo = {}
         self.course_id = {}
+        self.course_time = {}
         for line in open("conf/course.time.info"):
                 id, times = line.strip().split("\t")
                 times = times.split(",")
@@ -22,6 +23,7 @@ class CourseTimeInfo:
                     print id, week.stypetime(k)
                 """
                 self.course_id[id] = len(self.course_id)
+                self.course_time[id] = sum(self.timeinfo[id])/len(self.timeinfo[id])
 
 
     def get_index(self, id, timestampe):
@@ -33,6 +35,9 @@ class CourseTimeInfo:
     
     def get_course_id(self, id):
         return self.course_id.get(id)
+
+    def get_course_time(self, id):
+        return self.course_time[id]
 
 if __name__ == "__main__":
     ct = CourseTimeInfo()

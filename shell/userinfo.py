@@ -30,7 +30,7 @@ class Userinfo:
     def get_features(self, uid, course_id):
         f = [0]*(CIDX_VEC_NUM+1)
         for day in self.get_info(uid):
-            cidx = self.obj.get_index(course_id, week.times(day))
+            cidx = self.obj.get_index(course_id, self.week.times(day))
             f[cidx] = f[cidx] + 1
 
         f[CIDX_VEC_NUM] = self.get_num(uid)

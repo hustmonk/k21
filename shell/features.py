@@ -15,8 +15,10 @@ from label import *
 from weekend import *
 from coursetime import *
 from common import *
-from userinfo import *
+from highuser import *
 import math
+from module import *
+from transfer import *
 week = Week()
 coursetimeinfo = CourseTimeInfo()
 log_filename = sys.argv[1]
@@ -28,6 +30,11 @@ enrollment = Enrollment("../data/merge/enrollment.csv")
 obj = Obj()
 label = Label()
 userinfo = Userinfo()
+userinfo.load()
+module = Module()
+module.load()
+transfer_day = Transfer()
+transfer_day.load()
 ids = enrollment_train.ids
 import math
 def transfer(v):
@@ -63,45 +70,47 @@ for id in ids:
     server = 0
     for info in infos:
         day,timehms = info[0].split("T")
+        #weight = module.get_weight(info[3])
+        weight = 1
         if day not in info_by_day:
             info_by_day[day] = {}
             info_by_day[day]["category"] = {}
             info_by_day[day]["event"] = {}
         if info[1] == "browser":
-            browser += 1
-            info_by_day[day]["browser"] = info_by_day[day].get("browser", 0) + 1
+            browser += weight
+            info_by_day[day]["browser"] = info_by_day[day].get("browser", 0) + weight
         else:
-            server += 1
-            info_by_day[day]["server"] = info_by_day[day].get("server", 0) + 1
+            server += weight
+            info_by_day[day]["server"] = info_by_day[day].get("server", 0) + weight
         mod_info = obj.module_info.get(info[3])
         if mod_info != None:
             category = mod_info[1]
             category_idx = get_category_idx(category)
-            info_by_day[day]["category"][category_idx] = info_by_day[day]["category"].get(category_idx, 0) + 1
+            info_by_day[day]["category"][category_idx] = info_by_day[day]["category"].get(category_idx, 0) + weight
 
-            category_count[category_idx] = category_count[category_idx] + 1
+            category_count[category_idx] = category_count[category_idx] + weight
         else:
-            category_count[16] = category_count[16] + 1
+            category_count[16] = category_count[16] + weight
 
         event_idx = get_event_idx(info[2])
-        event_count[event_idx] = event_count[event_idx] + 1
-        info_by_day[day]["event"][event_idx] = info_by_day[day]["event"].get(event_idx, 0) + 1
+        event_count[event_idx] = event_count[event_idx] + weight
+        info_by_day[day]["event"][event_idx] = info_by_day[day]["event"].get(event_idx, 0) + weight
 
         days.add(day)
         weekday = week.get(day)
-        weekday_count[weekday] = weekday_count[weekday] + 1
+        weekday_count[weekday] = weekday_count[weekday] + weight
         info_by_day[day]["weekday"] = weekday
 
         hour = int(timehms[:2]) / 2
-        hour_count[hour] = hour_count[hour] + 1
+        hour_count[hour] = hour_count[hour] + weight
         info_by_day[day]["hour"] = hour
         
         cidx = obj.get_index(course_id, week.times(info[0]))
-        cidx_count[cidx] = cidx_count[cidx] + 1
+        cidx_count[cidx] = cidx_count[cidx] + weight
         info_by_day[day]["cidx"] = cidx
 
         cidx_by_stat = coursetimeinfo.get_index(course_id, week.times(info[0]))
-        cidx_by_stat_count[cidx_by_stat] = cidx_by_stat_count[cidx_by_stat] + 1
+        cidx_by_stat_count[cidx_by_stat] = cidx_by_stat_count[cidx_by_stat] + weight
     days = sorted(days)
 
     day_event_count = [0] * EVENT_VEC_NUM
@@ -127,29 +136,32 @@ for id in ids:
     last_browser = 0
     last_server = 0
     for info in infos:
+
+        weight = module.get_weight(info[3])
+        #weight = 1
         day,timehms = info[0].split("T")
         if day != days[-1]:
             continue
         if info[1] == "browser":
-            last_browser += 1
+            last_browser += weight
         else:
-            last_server += 1
+            last_server += weight
         mod_info = obj.module_info.get(info[3])
         if mod_info != None:
             category = mod_info[1]
             category_idx = get_category_idx(category)
-            last_day_category_count[category_idx] = last_day_category_count[category_idx] + 1
+            last_day_category_count[category_idx] = last_day_category_count[category_idx] + weight
         else:
-            last_day_category_count[16] = last_day_category_count[16] + 1
+            last_day_category_count[16] = last_day_category_count[16] + weight
 
         event_idx = get_event_idx(info[2])
-        last_day_event_count[event_idx] = last_day_event_count[event_idx] + 1
+        last_day_event_count[event_idx] = last_day_event_count[event_idx] + weight
 
         weekday = week.get(day)
-        last_day_weekday_count[weekday] = last_day_weekday_count[weekday] + 1
+        last_day_weekday_count[weekday] = last_day_weekday_count[weekday] + weight
 
         hour = int(timehms[:2]) / 2
-        last_day_hour_count[hour] = last_day_hour_count[hour] + 1
+        last_day_hour_count[hour] = last_day_hour_count[hour] + weight
 
         cidx = obj.get_index(course_id, week.times(info[0]))
         cidx_by_stat = coursetimeinfo.get_index(course_id, week.times(info[0]))
@@ -165,7 +177,11 @@ for id in ids:
         else:
             is_last_vec[diff] = 1
     use_vec = userinfo.get_features(username, course_id)
-    f = [0] * 248
+    if len(days) > 0:
+        transfer_vec = transfer_day.get_features(days[-1])
+    else:
+        transfer_vec = transfer_day.get_features("")
+    f = [0] * 274
     f[0] = transfer(len(infos))
     f[1] = transfer(len(enrollment.course_info.get(course_id, [])))
     f[2] = transfer(len(enrollment.user_info.get(username, [])))
@@ -175,11 +191,17 @@ for id in ids:
     f[6] = transfer(len(days))
     f[7] = transfer(last_browser)
     f[8] = transfer(last_server)
-    fv = [event_count,category_count,weekday_count,hour_count,cidx_count,course_id_vec,last_cidx_count,is_last_vec,day_event_count,day_category_count,day_weekday_count,day_hour_count,day_cidx_count,cidx_by_stat_count,last_day_event_count,last_day_category_count,last_day_weekday_count,last_day_hour_count, last_cidx_by_stat_count, use_vec]
+    fv_no_transfer = [transfer_vec]
     start = 9
+    for vs in fv_no_transfer:
+        for (i, v) in enumerate(vs):
+            f[start+i] = v
+        start = start + len(vs)
+
+    fv = [event_count,category_count,weekday_count,hour_count,cidx_count,course_id_vec,last_cidx_count,is_last_vec,day_event_count,day_category_count,day_weekday_count,day_hour_count,day_cidx_count,cidx_by_stat_count,last_day_event_count,last_day_category_count,last_day_weekday_count,last_day_hour_count, last_cidx_by_stat_count, use_vec]
     for vs in fv:
         for (i, v) in enumerate(vs):
             f[start+i] = transfer(v)
         start = start + len(vs)
 
-    fout.write("%s,%s,%s\n" % (y, id, ",".join(["%.2f" % k for k in f])))
+    fout.write("%s,%s,%s,%s\n" % (y, id, course_id, ",".join(["%.2f" % k for k in f])))

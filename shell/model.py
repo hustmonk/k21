@@ -24,8 +24,6 @@ class Model():
         clf.fit(X_train, y_train)
         #preds = clf.predict(X_test)
         preds = clf.predict_proba(X_test)
-        print clf.coef_
-        exit()
 
         modelFileSave = open('valid.model', 'wb')
         pickle.dump(clf, modelFileSave)

@@ -65,6 +65,9 @@ class Userinfo:
         self.total = pickle.load(modelFileLoad)
         self.week = Week()
         self.obj = Obj()
+
+    def get_days(self,uid):
+        return self.total[uid]["day"]
     
     def get_features(self, uid, course_id):
         info = self.total[uid]

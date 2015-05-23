@@ -21,6 +21,9 @@ def get_event_idx(k):
     return event_map[k]
 def get_category_idx(k):
     return category_map[k]
+import math
+def transfer(v):
+    return math.log(v+1)
 
 EVENT_VEC_NUM = 7
 CATEGORY_VEC_NUM = 17
@@ -31,6 +34,7 @@ COURSE_VEC_NUM = 39
 IS_LAST_VEC_NUM = 10
 ORDER_VEC_NUM=7
 TRANSFER_VEC_NUM=11
+MONTH_VEC_NUM=24
 #EVENT_VEC_NUM = 7
 #CATEGORY_VEC_NUM = 17
 #WEEKDAY_VEC_NUM = 7

@@ -16,14 +16,12 @@ from weekend import *
 from coursetime import *
 from common import *
 import math
-import pickle
+import cPickle as pickle
 class LastDayInfo:
     def build(self):
         week = Week()
-        #log = Log("../data/merge/log.csv")
-        #enrollment = Enrollment("../data/merge/enrollment.csv")
-        enrollment = Enrollment("../data/train/enrollment_train.csv")
-        log = Log("../data/train/log_train.csv")
+        log = Log("../data/merge/log.csv")
+        enrollment = Enrollment("../data/merge/enrollment.csv")
         ccc = 0
         last_infos = {}
         id_days_infos = {}
@@ -56,6 +54,10 @@ class LastDayInfo:
     def load(self):
         modelFileLoad = open('_feature/last.day.log', 'rb')
         self.last_infos = pickle.load(modelFileLoad)
+        modelFileLoad = open('_feature/id_days.info', 'rb')
+        self.id_days_infos = pickle.load(modelFileLoad)
+
+    def load_id_days(self):
         modelFileLoad = open('_feature/id_days.info', 'rb')
         self.id_days_infos = pickle.load(modelFileLoad)
 

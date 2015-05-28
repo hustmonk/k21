@@ -13,6 +13,7 @@ from enrollment import *
 from Object import *
 from label import *
 from weekend import *
+from common import *
 week = Week()
 enrollment = Enrollment("../data/merge/enrollment.csv")
 obj = Obj()
@@ -35,7 +36,7 @@ for line in open("../data/merge/log.csv"):
 for (k,v) in count.items():
     v = sorted(v)
     buf = []
-    for i in range(10):
-        buf.append(v[i * len(v) / 10])
+    for i in range(CIDX_VEC_NUM):
+        buf.append(v[i * len(v) / CIDX_VEC_NUM])
     fout.write("%s\t%s\n" % (k, ",".join(["%s" % k for k in buf])))
 

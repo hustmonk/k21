@@ -9,6 +9,7 @@ __revision__ = '0.1'
 import math
 import sys
 from model import *
+#from randomforest import *
 def read(filename):
     X = []
     Y = []
@@ -28,4 +29,5 @@ X_test, y_test, ids_test = read(sys.argv[2])
 out_file = sys.argv[3]
 is_valid = int(sys.argv[4])
 model = Model()
+print "model"
 model.train(X_train, y_train, X_test, ids_test, y_test, out_file, is_valid)

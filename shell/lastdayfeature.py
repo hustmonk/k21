@@ -21,10 +21,12 @@ from module import *
 from transfer import *
 from lastday import *
 from commonfeature import *
+import cPickle as pickle
 week = Week()
 class LastDayFeature:
     def build(self):
-        enrollment = Enrollment("../data/train/enrollment_train.csv")
+        print "start build LastDayFeature..."
+        enrollment = Enrollment("../data/merge/enrollment.csv")
         last_day_info = LastDayInfo()
         last_day_info.load()
         commonfeature = CommonFeature()
@@ -42,6 +44,7 @@ class LastDayFeature:
         modelFileSave = open('_feature/lastday.info.model', 'wb')
         pickle.dump(fs, modelFileSave)
         modelFileSave.close()
+        print "build LastDayFeature over!"
 
     def load(self):
         modelFileLoad = open('_feature/lastday.info.model', 'rb')

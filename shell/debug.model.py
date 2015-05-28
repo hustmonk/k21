@@ -17,7 +17,7 @@ for line in open("feature.description"):
         for i in range(int(start), int(end) + 1):
             infos.append(info)
 
-import pickle
+import cPickle as pickle
 modelFileLoad = open('../shell/valid.model', 'rb')
 clf = pickle.load(modelFileLoad)
 print len(infos),clf.coef_.shape

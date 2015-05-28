@@ -24,7 +24,8 @@ class Obj:
                 for child in children:
                     self.parent[child] = module_id
             self.module_info[module_id] = [course_id,category,children,start]
-            if line.find("chapter") > 0 and line.find("null") < 0:
+            #if line.find("chapter") > 0 and line.find("null") < 0:
+            if len(start) > 6:
                 if course_id not in self.course_timeinfo:
                     self.course_timeinfo[course_id] = [week.times(start)]
                 else:

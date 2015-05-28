@@ -22,11 +22,10 @@ from transfer import *
 week = Week()
 class DayLevelInfo:
     def build(self):
+        print "start build DayLevelInfo..."
         coursetimeinfo = CourseTimeInfo()
-        #log = Log("../data/merge/log.csv")
-        #enrollment = Enrollment("../data/merge/enrollment.csv")
-        enrollment = Enrollment("../data/train/enrollment_train.csv")
-        log = Log("../data/train/log_train.csv")
+        log = Log("../data/merge/log.csv")
+        enrollment = Enrollment("../data/merge/enrollment.csv")
         obj = Obj()
         label = Label()
         userinfo = Userinfo()
@@ -102,6 +101,7 @@ class DayLevelInfo:
         modelFileSave = open('_feature/day.level.info.model', 'wb')
         pickle.dump(fs, modelFileSave)
         modelFileSave.close()
+        print "build DayLevelInfo over!"
 
     def load(self):
         modelFileLoad = open('_feature/day.level.info.model', 'rb')

@@ -24,8 +24,10 @@ from commonfeature import *
 week = Week()
 class AllDayFeature:
     def build(self):
-        enrollment = Enrollment("../data/train/enrollment_train.csv")
-        log = Log("../data/train/log_train.csv")
+        print "start build AllDayFeature..."
+        enrollment = Enrollment("../data/merge/enrollment.csv")
+        label = Label()
+        log = Log("../data/merge/log.csv")
         commonfeature = CommonFeature()
         ccc = 0
         fs = {}
@@ -41,6 +43,7 @@ class AllDayFeature:
         modelFileSave = open('_feature/allday.info.model', 'wb')
         pickle.dump(fs, modelFileSave)
         modelFileSave.close()
+        print "build AllDayFeature over!"
 
     def load(self):
         modelFileLoad = open('_feature/allday.info.model', 'rb')

@@ -43,3 +43,4 @@ if __name__ == "__main__":
     print week.diff("2015-05-16","2015-05-14")
     print week.diff('2014-07-11', '2014-07-05')
     print week.timestamp("2014-06-07") -  week.timestamp("2014-06-06")
+    print week.times("2013-12-24T14:17:14")

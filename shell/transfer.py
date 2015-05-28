@@ -8,7 +8,7 @@
 __revision__ = '0.1'
 from weekend import *
 from common import *
-import pickle
+import cPickle as pickle
 import math
 class Transfer():
     def build(self):
@@ -46,7 +46,7 @@ class Transfer():
 
 if __name__ == "__main__":
     transfer = Transfer()
-    #transfer.build()
+    transfer.build()
     transfer.load()
     print [math.log(k+1) for k in transfer.get_features("2013-12-31")]
     print sum([math.log(k+1) for k in transfer.get_features("2013-12-31")])

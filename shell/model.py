@@ -8,10 +8,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.grid_search import GridSearchCV
 from sklearn import cross_validation
 from sklearn import metrics
+import sklearn
 import logging
 import logging.config
 import sys
-import pickle
+import cPickle as pickle
 logging.config.fileConfig("log.conf")
 logger = logging.getLogger("example")
 

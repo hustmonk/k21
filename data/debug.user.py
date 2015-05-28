@@ -38,7 +38,6 @@ for line in open("../shell/train2.txt"):
         #print feature, clf.coef_
         #print feature, type(clf.coef_)
         print len(feature)
-        continue
         for i in range(len(feature)):
             x = feature[i] * clf.coef_[0, i]
             print i, feature[i], clf.coef_[0, i],feature[i] * clf.coef_[0, i]

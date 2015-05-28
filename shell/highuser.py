@@ -16,9 +16,10 @@ from weekend import *
 from coursetime import *
 from common import *
 import math
-import pickle
+import cPickle as pickle
 class Userinfo:
     def build(self):
+        print "start build Userinfo..."
         week = Week()
         coursetimeinfo = CourseTimeInfo()
         log = Log("../data/merge/log.csv")
@@ -59,6 +60,7 @@ class Userinfo:
         modelFileSave = open('conf/user.info.model', 'wb')
         pickle.dump(total, modelFileSave)
         modelFileSave.close()
+        print "build Userinfo over!"
 
     def load(self):
         modelFileLoad = open('conf/user.info.model', 'rb')

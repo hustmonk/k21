@@ -102,11 +102,16 @@ def get_features(id):
     f_last_day = lastdayfeature.get_features(id)
     f_day_level = daylevel.get_features(id)
     f_common = alldayfeature.get_features(id)
+    f_days = [0] * DAYS_VEC_NUM
     f_last_5_record = "0"#lastday5recordfeature.get_features(id)
-    f = [0] * 124
+    f = [0] * 139
     f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
     f[1] = transfer(len(enrollment.user_info.get(username, [])))
     f[2] = transfer(len(days))
+    dy_num = len(days)
+    if dy_num > DAYS_VEC_NUM-1:
+        dy_num = DAYS_VEC_NUM-1
+    f_days[dy_num] = 1
     fv_no_transfer = [transfer_vec]
     start = 3
     for vs in fv_no_transfer:
@@ -114,12 +119,12 @@ def get_features(id):
             f[start+i] = v
         start = start + len(vs)
 
-    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec]
+    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days]
     for vs in fv:
         for (i, v) in enumerate(vs):
             f[start+i] = transfer(v)
         start = start + len(vs)
-    fs = "%s,%s,%s,%s,%s,%s,%s,%s\n" % (y, id, course_id, f_common, f_last_day, f_day_level, ",".join(["%.2f" % k for k in f]), f_last_5_record)
+    fs = "%s,%s,%s,%s,%s,%s,%s,-%s\n" % (y, id, course_id, f_common, f_last_day, f_day_level, ",".join(["%.2f" % k for k in f]), f_last_5_record)
     return fs
 def filed():
     fout = open(featrue_filename,"w")

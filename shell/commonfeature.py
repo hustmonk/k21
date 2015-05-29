@@ -40,6 +40,7 @@ class CommonFeature():
         cidx_count = [0] * CIDX_VEC_NUM
         cidx_by_stat_count = [0] * CIDX_VEC_NUM
         month_count = [0] * MONTH_VEC_NUM
+        next_public = [0] * CIDX_VEC_NUM
         spend_time_count = [0] * 10
         sqrt_spend_time_count = [0] * 10
         browser = 0
@@ -84,6 +85,13 @@ class CommonFeature():
 
             cidx_by_stat = self.coursetimeinfo.get_index(course_id, week.times(info[0]))
             cidx_by_stat_count[cidx_by_stat] = cidx_by_stat_count[cidx_by_stat] + 1
+        if _p > 1:
+            next_public_diff = self.obj.get_index(course_id, _p)
+        else:
+            next_public_diff = CIDX_VEC_NUM
+        if next_public_diff > CIDX_VEC_NUM - 1:
+            next_public_diff = CIDX_VEC_NUM - 1
+        next_public[next_public_diff] = 1
         time_idx = self.get_spend_time_idx(timesum)
         spend_time_count[time_idx] = 1
         time_idx = self.get_spend_time_idx(sqrt_timesum)
@@ -93,8 +101,8 @@ class CommonFeature():
         buf.append( "%.3f" % ((browser+3.1)/(float(len(infos))+6.5)))
         if isDebug:
             print fp
-        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp]
-        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp"]
+        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public]
+        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public"]
         for j in range(len(fv)):
             vs = fv[j]
             if isDebug:

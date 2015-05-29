@@ -81,16 +81,22 @@ class DayLevelInfo:
             day_weekday_count = [0] * WEEKDAY_VEC_NUM
             day_hour_count = [0] * HOUR_VEC_NUM
             day_cidx_count = [0] * CIDX_VEC_NUM
+            _browser = 0
+            _server = 0
             for (day, info) in info_by_day.items():
                 for (k,v) in info["event"].items():
                     day_event_count[k] = day_event_count[k] + math.sqrt(v)
+                _browser = _browser + math.sqrt(info.get("browser", 0))
+                _server = _server + math.sqrt(info.get("server", 0))
                 day_weekday_count[info["weekday"]] = day_weekday_count[info["weekday"]] + 1
                 day_hour_count[info["hour"]] = day_hour_count[info["hour"]] + 1
                 day_cidx_count[info["cidx"]] = day_cidx_count[info["cidx"]] + 1
 
-            f = [0] * (EVENT_VEC_NUM + WEEKDAY_VEC_NUM + HOUR_VEC_NUM + CIDX_VEC_NUM)
+            f = [0] * (2 + EVENT_VEC_NUM + WEEKDAY_VEC_NUM + HOUR_VEC_NUM + CIDX_VEC_NUM)
+            f[0] = transfer(_browser)
+            f[1] = transfer(_server)
             fv_no_transfer = [day_event_count,day_weekday_count,day_hour_count,day_cidx_count]
-            start = 0
+            start = 2
             for vs in fv_no_transfer:
                 for (i, v) in enumerate(vs):
                     f[start+i] = transfer(v)

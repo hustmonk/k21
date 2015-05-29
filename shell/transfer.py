@@ -40,9 +40,14 @@ class Transfer():
     def load(self):
         modelFileLoad = open('conf/transfer.model', 'rb')
         self.ratio = pickle.load(modelFileLoad)
+        self.default = [0.2/TRANSFER_VEC_NUM]*TRANSFER_VEC_NUM
+        self.default[TRANSFER_VEC_NUM-1] = 1 - 0.2/TRANSFER_VEC_NUM * (TRANSFER_VEC_NUM-1)
 
     def get_features(self, day):
-        return self.ratio.get(day, [0.2/TRANSFER_VEC_NUM]*TRANSFER_VEC_NUM)
+        if day in self.ratio:
+            return self.ratio[day]
+        else:
+            return self.default
 
 if __name__ == "__main__":
     transfer = Transfer()

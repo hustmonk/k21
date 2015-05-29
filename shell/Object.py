@@ -17,6 +17,7 @@ class Obj:
         self.module_info = {}
         self.parent = {}
         self.course_timeinfo = {}
+        self.buf = {}
         for line in open("../data/object.csv"):
             course_id,module_id,category,children,start = line.strip().split(",")
             children = children.split(" ")
@@ -28,16 +29,18 @@ class Obj:
             if len(start) > 6:
                 if course_id not in self.course_timeinfo:
                     self.course_timeinfo[course_id] = [week.times(start)]
+                    self.buf[course_id] = [start[:10]]
                 else:
                     self.course_timeinfo[course_id].append(week.times(start))
+                    self.buf[course_id].append(start[:10])
         #time
         self.course_start_end = {}
         for (k,v) in self.course_timeinfo.items():
             v = sorted(v)
-            start = v[0] - 86400
-            end = v[-1] + 86400
+            start = v[2] - 86400*7
+            end = v[-2] + 86400*7
             #print v
-            self.course_start_end[k] = [start, end]
+            self.course_start_end[k] = [start, end, v]
         self.course_root_module = {}
         self.module_depth = {}
         for module_id in self.module_info:
@@ -63,12 +66,19 @@ class Obj:
                 break
 
     def get_index(self, id, timestampe):
-        start,end = self.course_start_end[id]
+        start,end = self.course_start_end[id][:2]
         if timestampe < start:
             return 0
         elif timestampe > end:
             return CIDX_VEC_NUM-1
         return int((timestampe - start) * (CIDX_VEC_NUM - 2) / (end - start)) + 1
+
+    def get_next_public(self, id, timestampe):
+        v = self.course_start_end[id][-1]
+        for k in v:
+            if k > timestampe:
+                return int((k - timestampe)/86400)
+        return CIDX_VEC_NUM
 
 
 if __name__ == "__main__":

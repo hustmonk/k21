@@ -103,23 +103,29 @@ def get_features(id):
     f_day_level = daylevel.get_features(id)
     f_common = alldayfeature.get_features(id)
     f_days = [0] * DAYS_VEC_NUM
+    f_all_days = [0] * DAYS_VEC_NUM
     f_last_5_record = "0"#lastday5recordfeature.get_features(id)
-    f = [0] * 139
+    f = [0] * 165
     f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
     f[1] = transfer(len(enrollment.user_info.get(username, [])))
     f[2] = transfer(len(days))
+    f[3] = transfer(len(alldays))
     dy_num = len(days)
     if dy_num > DAYS_VEC_NUM-1:
         dy_num = DAYS_VEC_NUM-1
     f_days[dy_num] = 1
+    dy_num = len(alldays)
+    if dy_num > DAYS_VEC_NUM-1:
+        dy_num = DAYS_VEC_NUM-1
+    f_all_days[dy_num] = 1
     fv_no_transfer = [transfer_vec]
-    start = 3
+    start = 4
     for vs in fv_no_transfer:
         for (i, v) in enumerate(vs):
             f[start+i] = v
         start = start + len(vs)
 
-    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days]
+    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days]
     for vs in fv:
         for (i, v) in enumerate(vs):
             f[start+i] = transfer(v)

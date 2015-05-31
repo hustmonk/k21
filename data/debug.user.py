@@ -7,10 +7,21 @@
 import sys
 __revision__ = '0.1'
 for line in open("train2/enrollment_train.csv"):
+    arr = line.strip().split(",")
     id = line.split(",")[0]
-    if id == sys.argv[1]:
+    if arr[0] == sys.argv[1]:
         print line.strip()
-        cid = line.strip().split(",")[-1]
+        cid = arr[-1]
+        uid = arr[1]
+print "uinfo....."
+for line in open("train2/enrollment_train.csv"):
+    arr = line.strip().split(",")
+    id = line.split(",")[0]
+    if arr[1] == uid:
+        print line.strip()
+        cid = arr[-1]
+        uid = arr[1]
+print "uinfo....."
 for line in open("train2/log_train.csv"):
     id = line.split(",")[0]
     if id == sys.argv[1]:

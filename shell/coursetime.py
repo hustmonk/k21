@@ -34,7 +34,7 @@ class CourseTimeInfo:
         return CIDX_VEC_NUM-1
     
     def get_course_id(self, id):
-        return self.course_id.get(id)
+        return self.course_id.get(id, 1)
 
     def get_course_time(self, id):
         return self.course_time[id]

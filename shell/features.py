@@ -22,6 +22,7 @@ from lastdayfeature import *
 from day_level_feafure import *
 from alldayfeature import *
 from lastday import *
+from wholesitefeature import *
 from lastday5recordfeature import *
 week = Week()
 lastdayfeature = LastDayFeature()
@@ -44,6 +45,8 @@ userinfo = Userinfo()
 userinfo.load()
 transfer_day = Transfer()
 transfer_day.load()
+wholesitefeature = WholeSiteFeature()
+wholesitefeature.load()
 ids = enrollment_train.ids
 import math
 def transfer(v):
@@ -102,6 +105,7 @@ def get_features(id):
     f_last_day = lastdayfeature.get_features(id)
     f_day_level = daylevel.get_features(id)
     f_common = alldayfeature.get_features(id)
+    f_user_site = wholesitefeature.get_features(username)
     f_days = [0] * DAYS_VEC_NUM
     f_all_days = [0] * DAYS_VEC_NUM
     f_last_5_record = "0"#lastday5recordfeature.get_features(id)
@@ -130,7 +134,7 @@ def get_features(id):
         for (i, v) in enumerate(vs):
             f[start+i] = transfer(v)
         start = start + len(vs)
-    fs = "%s,%s,%s,%s,%s,%s,%s,-%s\n" % (y, id, course_id, f_common, f_last_day, f_day_level, ",".join(["%.2f" % k for k in f]), f_last_5_record)
+    fs = "%s,%s,%s,%s,%s,%s,%s,-%s,%s\n" % (y, id, course_id, f_common, f_last_day, f_day_level, ",".join(["%.2f" % k for k in f]), f_last_5_record, f_user_site)
     return fs
 def filed():
     fout = open(featrue_filename,"w")

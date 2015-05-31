@@ -18,10 +18,8 @@ def read(filename):
         arr = line.strip().split(",")
         y = int(arr[0])
         ids.append(arr[1])
-        #arr[2] = arr[1]
 
-        x = [float(k) for k in arr[3:]]
-        #x[0] = math.log(int(x[0]/10000) + 1)
+        x = [ math.sqrt(math.fabs(float(k))) for k in arr[3:]]
         X.append(x)
         Y.append(y)
     return X,Y,ids

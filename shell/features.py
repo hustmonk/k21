@@ -52,7 +52,7 @@ import math
 def transfer(v):
     return math.log(v+1)
 
-def get_features(id):
+def get_features(id,IS_DEBUG=False):
     y = label.get(id)
     username, course_id = enrollment.enrollment_info.get(id)
 
@@ -65,6 +65,7 @@ def get_features(id):
     is_pre_vec = [0] * IS_LAST_VEC_NUM #0 not last, 1-5, 6 more than 5
     is_next_vec = [0] * IS_LAST_VEC_NUM #0 not last, 1-5, 6 more than 5
     next_daynum_vec = [0] * IS_LAST_VEC_NUM
+    gap_vec = [0] * IS_LAST_VEC_NUM
     if len(days) < 2:
         is_last_vec[0] = 1
         is_pre_vec[0] = 1
@@ -72,6 +73,11 @@ def get_features(id):
         last_day = days[-1]
         isCC = 0
         _diff = 100
+        for i in range(len(days)-1):
+            diff = week.diff(days[i+1], days[i])
+            if diff > (IS_LAST_VEC_NUM-1):
+                diff = (IS_LAST_VEC_NUM-1)
+            gap_vec[diff] = gap_vec[diff] + 1
         for day in days[:-1]:
             diff = week.diff(last_day, day) / 2 + 1
             if diff < (IS_LAST_VEC_NUM-1):
@@ -85,16 +91,34 @@ def get_features(id):
         is_pre_vec[_diff] = 1
     alldays = userinfo.get_days(username)
     daynum = 0
+    whole_site_pre_vec = [0] * IS_LAST_VEC_NUM
+    whole_site_post_vec = [0] * IS_LAST_VEC_NUM
+    pre_num = 0
+    post_num = 0
     if len(days) > 0:
         for day in alldays:
             diff = week.diff(day,days[-1]) / 2
+            if diff > 0:
+                post_num = post_num + 1
+            else:
+                pre_num = pre_num + 1
             if diff > 0  and diff < IS_LAST_VEC_NUM-1:
                 is_next_vec[diff] = 1
                 daynum += 1
         if daynum >= IS_LAST_VEC_NUM:
             daynum = IS_LAST_VEC_NUM - 1
+    else:
+        print id,"X"
     if daynum == 0:
         is_next_vec[IS_LAST_VEC_NUM-1] = 1
+    if post_num > IS_LAST_VEC_NUM-1:
+        post_num = IS_LAST_VEC_NUM-1
+    if pre_num > IS_LAST_VEC_NUM-1:
+        pre_num = IS_LAST_VEC_NUM-1
+    if IS_DEBUG:
+        print "post_num,",post_num,"pre_num",pre_num
+    whole_site_pre_vec[pre_num] = 1
+    whole_site_post_vec[post_num] = 1
     next_daynum_vec[daynum] = 1
 
     use_vec = userinfo.get_features(username, course_id)
@@ -108,10 +132,16 @@ def get_features(id):
     f_user_site = wholesitefeature.get_features(username)
     f_days = [0] * DAYS_VEC_NUM
     f_all_days = [0] * DAYS_VEC_NUM
+    f_enrollment_num_vec = [0] * MAX_ENROLLMENT_VEC_NUM
     f_last_5_record = "0"#lastday5recordfeature.get_features(id)
-    f = [0] * 165
+    f = [0] * 215
     f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
-    f[1] = transfer(len(enrollment.user_info.get(username, [])))
+    enrollment_num = len(enrollment.user_info.get(username, []))
+    f[1] = transfer(enrollment_num)
+    if enrollment_num > MAX_ENROLLMENT_VEC_NUM - 1:
+        enrollment_num = MAX_ENROLLMENT_VEC_NUM - 1
+    f_enrollment_num_vec[enrollment_num] = 1
+
     f[2] = transfer(len(days))
     f[3] = transfer(len(alldays))
     dy_num = len(days)
@@ -129,12 +159,16 @@ def get_features(id):
             f[start+i] = v
         start = start + len(vs)
 
-    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days]
-    for vs in fv:
+    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days,whole_site_pre_vec,whole_site_post_vec,gap_vec, f_enrollment_num_vec]
+    fv_debug = ["course_id_vec","is_last_vec", "use_vec", "is_next_vec","next_daynum_vec","is_pre_vec","f_days","f_all_days","whole_site_pre_vec","whole_site_post_vec","gap_vec", "f_enrollment_num_vec"]
+    for j in range(len(fv)):
+        vs = fv[j]
+        if IS_DEBUG:
+            print fv_debug[j],vs
         for (i, v) in enumerate(vs):
             f[start+i] = transfer(v)
         start = start + len(vs)
-    fs = "%s,%s,%s,%s,%s,%s,%s,-%s,%s\n" % (y, id, course_id, f_common, f_last_day, f_day_level, ",".join(["%.2f" % k for k in f]), f_last_5_record, f_user_site)
+    fs = "%s,%s,%s,%d,-%s,-%s,-%s,-%s,-%s,-%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, ",".join(["%.2f" % k for k in f]), f_last_5_record, f_user_site)
     return fs
 def filed():
     fout = open(featrue_filename,"w")
@@ -145,9 +179,9 @@ def filed():
         if ccc % 5000 == 0:
             print ccc
         fout.write(fs)
-def single(id):
-    print get_features(id)
+def single(id, True):
+    print get_features(id, True)
 
-#single("184324")
+#single("199364", True)
 filed()
 

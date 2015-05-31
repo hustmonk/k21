@@ -14,12 +14,11 @@ for line in open("train2/enrollment_train.csv"):
         cid = arr[-1]
         uid = arr[1]
 print "uinfo....."
-for line in open("train2/enrollment_train.csv"):
+for line in open("merge/enrollment.csv"):
     arr = line.strip().split(",")
     id = line.split(",")[0]
     if arr[1] == uid:
         print line.strip()
-        cid = arr[-1]
         uid = arr[1]
 print "uinfo....."
 for line in open("train2/log_train.csv"):

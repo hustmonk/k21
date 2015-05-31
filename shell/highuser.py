@@ -67,9 +67,11 @@ class Userinfo:
         self.total = pickle.load(modelFileLoad)
         self.week = Week()
         self.obj = Obj()
+        """
         for (k, v) in self.total.items():
             days = v["day"]
             print "%s\t%d\t%s" % (k, len(days), days)
+        """
 
     def get_days(self,uid):
         return self.total[uid]["day"]

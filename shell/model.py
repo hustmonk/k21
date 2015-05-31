@@ -33,7 +33,7 @@ class Model():
         if is_valid:
             roc_auc = metrics.roc_auc_score(y_test, preds[:,1])
             logger.info(roc_auc)
-            print roc_auc,len(X_train)
+            print roc_auc,len(y_test)
         fout = open(outfile, "w")
         for i in range(len(ids_test)):
             fout.write("%s,%.3f\n" % (ids_test[i], preds[i,1]) )

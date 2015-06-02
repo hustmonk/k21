@@ -56,6 +56,26 @@ class MoreDayFeature:
         modelFileLoad = open('_feature/moreday.info.model', 'rb')
         self.fs = pickle.load(modelFileLoad)
 
+    def get_enrollment_ids(self, username, id):
+        k = self.fs[username]
+        if len(k) == 1:
+            return [[],[]]
+        k = sorted(k.items(), key=lambda x:x[1])
+        for i in range(len(k)):
+            if k[i][0] == id:
+                break
+        return [[j[0] for j in k[:i]], [j[0] for j in k[i+1:]]]
+    
+    def get_enrollment_features(self, username, id):
+        k = self.fs[username]
+        if len(k) == 1:
+            return [0,0]
+        k = sorted(k.items(), key=lambda x:x[1])
+        for i in range(len(k)):
+            if k[i][0] == id:
+                break
+        return [i, len(k)-i-1]
+
     def get_features(self, username, id):
         k = self.fs[username]
         if len(k) == 1:

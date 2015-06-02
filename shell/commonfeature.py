@@ -35,6 +35,10 @@ class CommonFeature():
     def get_features(self, infos, course_id, isDebug = False):
         week = Week()
         event_count = [0] * EVENT_VEC_NUM
+        category_count = [0] * CATEGORY_VEC_NUM
+        u_event_count = [0] * EVENT_VEC_NUM
+        event_timesum = [0] * EVENT_VEC_NUM
+        event_sqrt_timesum = [0] * EVENT_VEC_NUM
         weekday_count = [0] * WEEKDAY_VEC_NUM
         hour_count = [0] * HOUR_VEC_NUM
         cidx_count = [0] * CIDX_VEC_NUM
@@ -49,17 +53,24 @@ class CommonFeature():
         sqrt_timesum = 0
         _p = 0
         cc = 0
+        _event_idx = -1
+        u_event_dict = {}
         for info in infos:
             if info[0].find("T") < 0:
                 continue
             p = week.times(info[0])
+            _time = 1
+            _sqrt_time = 1
             if _p > p - 60 * 3:
-                timesum = timesum + p - _p
-                sqrt_timesum = sqrt_timesum + math.sqrt(p - _p)
+                _time = p - _p
+                _sqrt_time = math.sqrt(p - _p)
             else:
                 cc += 1
-                timesum = timesum + 1
-                sqrt_timesum = sqrt_timesum + 1
+            timesum = timesum + _time
+            sqrt_timesum = sqrt_timesum + _sqrt_time
+            if _event_idx != -1:
+                event_timesum[_event_idx] = event_timesum[_event_idx] + _time/10.0
+                event_sqrt_timesum[_event_idx] = event_sqrt_timesum[_event_idx] + _sqrt_time/10.0
             if isDebug:
                 print timesum ,p,_p,info[0]
             _p = p
@@ -73,6 +84,13 @@ class CommonFeature():
             month_count[month_idx] = 1
 
             event_idx = get_event_idx(info[2])
+            _event_idx = event_idx
+            category_idx = self.obj.get_category_idx(info[3])
+            category_count[category_idx] = category_count[category_idx] + 1
+
+            if info[2]+info[-1] in u_event_dict:
+                u_event_count[event_idx] = u_event_count[event_idx] + 1
+            u_event_dict[info[2]+info[-1]] = 1
             event_count[event_idx] = event_count[event_idx] + 1
 
             weekday = week.get(day)
@@ -101,8 +119,8 @@ class CommonFeature():
         buf.append( "%.3f" % ((browser+3.1)/(float(len(infos))+6.5)))
         if isDebug:
             print fp
-        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public]
-        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public"]
+        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count]
+        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count"]
         for j in range(len(fv)):
             vs = fv[j]
             if isDebug:

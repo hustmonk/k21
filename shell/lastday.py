@@ -19,6 +19,7 @@ import math
 import cPickle as pickle
 class LastDayInfo:
     def build(self):
+        print "start LastDayInfo build..."
         week = Week()
         log = Log("../data/merge/log.csv")
         enrollment = Enrollment("../data/merge/enrollment.csv")
@@ -39,7 +40,7 @@ class LastDayInfo:
                 days.add(day)
                 if day != _day:
                     buf = []
-                buf.append(info)
+                buf.append(",".join(info))
                 _day = day
             last_infos[id] = buf
             days = sorted(days)
@@ -50,6 +51,7 @@ class LastDayInfo:
         modelFileSave = open('_feature/id_days.info', 'wb')
         pickle.dump(id_days_infos, modelFileSave)
         modelFileSave.close()
+        print "LastDayInfo build over"
 
     def load(self):
         modelFileLoad = open('_feature/last.day.log', 'rb')
@@ -62,7 +64,7 @@ class LastDayInfo:
         self.id_days_infos = pickle.load(modelFileLoad)
 
     def get_info(self, id):
-        return self.last_infos[id]
+        return [k.split(",") for k in self.last_infos[id]]
 
     def get_days(self, id):
         return self.id_days_infos[id]
@@ -70,5 +72,5 @@ class LastDayInfo:
 if __name__ == "__main__":
     userinfo = LastDayInfo()
     userinfo.build()
-    userinfo.load()
-    print userinfo.get_info("1")
+    #userinfo.load()
+    #print userinfo.get_info("1")

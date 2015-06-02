@@ -20,6 +20,6 @@ for line in open("../data/merge/log.csv"):
         username, course_id = enrollment.enrollment_info.get(sys.argv[1])
         print "\n".join([k[0] for k in infos])
         f = commonfeature.get_features(infos, course_id, True)
-        f = commonfeature.get_features_no_courseid(infos,  True)
+        #f = commonfeature.get_features_no_courseid(infos,  True)
         print f
         break

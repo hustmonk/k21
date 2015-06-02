@@ -26,7 +26,7 @@ def transfer(v):
     return math.log(v+1)
 
 EVENT_VEC_NUM = 7
-CATEGORY_VEC_NUM = 17
+CATEGORY_VEC_NUM = 18
 WEEKDAY_VEC_NUM = 7
 HOUR_VEC_NUM = 12
 CIDX_VEC_NUM = 15

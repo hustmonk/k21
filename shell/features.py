@@ -24,6 +24,7 @@ from alldayfeature import *
 from lastday import *
 from wholesitefeature import *
 from lastday5recordfeature import *
+from moreinfo import *
 week = Week()
 lastdayfeature = LastDayFeature()
 lastdayfeature.load()
@@ -48,6 +49,8 @@ transfer_day.load()
 wholesitefeature = WholeSiteFeature()
 wholesitefeature.load()
 ids = enrollment_train.ids
+moreinfo = MoreDayFeature()
+moreinfo.load()
 import math
 def transfer(v):
     return math.log(v+1)
@@ -93,6 +96,26 @@ def get_features(id,IS_DEBUG=False):
     daynum = 0
     whole_site_pre_vec = [0] * IS_LAST_VEC_NUM
     whole_site_post_vec = [0] * IS_LAST_VEC_NUM
+    whole_site_pre_enrollment_vec = [0] * IS_LAST_VEC_NUM
+    whole_site_post_enrollment_vec = [0] * IS_LAST_VEC_NUM
+
+    whole_site_pre_enrollment_id_vec = [0] * COURSE_VEC_NUM
+    whole_site_post_enrollment_id_vec = [0] * COURSE_VEC_NUM
+    k1,k2 = moreinfo.get_enrollment_features(username,id)
+    kids1, kids2 = moreinfo.get_enrollment_ids(username,id)
+    for k in kids1:
+        _username, k = enrollment.enrollment_info.get(k)
+        whole_site_pre_enrollment_id_vec[coursetimeinfo.get_course_id(k)] = 1
+    for k in kids2:
+        _username, k = enrollment.enrollment_info.get(k)
+        whole_site_post_enrollment_id_vec[coursetimeinfo.get_course_id(k)] = 1
+    if k1 > IS_LAST_VEC_NUM - 1:
+        k1 = IS_LAST_VEC_NUM - 1
+    if k2 > IS_LAST_VEC_NUM - 1:
+        k2 = IS_LAST_VEC_NUM - 1
+    #print k1, k2, kids1, kids2
+    whole_site_pre_enrollment_vec[k1] = 1
+    whole_site_post_enrollment_vec[k2] = 1
     pre_num = 0
     post_num = 0
     if len(days) > 0:
@@ -134,16 +157,11 @@ def get_features(id,IS_DEBUG=False):
     f_all_days = [0] * DAYS_VEC_NUM
     f_enrollment_num_vec = [0] * MAX_ENROLLMENT_VEC_NUM
     f_last_5_record = "0"#lastday5recordfeature.get_features(id)
-    f = [0] * 215
-    f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
     enrollment_num = len(enrollment.user_info.get(username, []))
-    f[1] = transfer(enrollment_num)
     if enrollment_num > MAX_ENROLLMENT_VEC_NUM - 1:
         enrollment_num = MAX_ENROLLMENT_VEC_NUM - 1
     f_enrollment_num_vec[enrollment_num] = 1
 
-    f[2] = transfer(len(days))
-    f[3] = transfer(len(alldays))
     dy_num = len(days)
     if dy_num > DAYS_VEC_NUM-1:
         dy_num = DAYS_VEC_NUM-1
@@ -152,15 +170,26 @@ def get_features(id,IS_DEBUG=False):
     if dy_num > DAYS_VEC_NUM-1:
         dy_num = DAYS_VEC_NUM-1
     f_all_days[dy_num] = 1
+
+    f = [0] * 305
+    f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
+    f[1] = transfer(enrollment_num)
+    f[2] = transfer(len(days))
+    f[3] = transfer(len(alldays))
+
     fv_no_transfer = [transfer_vec]
+    fv_no_transfer_debug = ["transfer_vec"]
     start = 4
-    for vs in fv_no_transfer:
+    for j in range(len(fv_no_transfer)):
+        vs = fv_no_transfer[j]
+        if IS_DEBUG:
+            print fv_no_transfer_debug[j],vs
         for (i, v) in enumerate(vs):
             f[start+i] = v
         start = start + len(vs)
 
-    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days,whole_site_pre_vec,whole_site_post_vec,gap_vec, f_enrollment_num_vec]
-    fv_debug = ["course_id_vec","is_last_vec", "use_vec", "is_next_vec","next_daynum_vec","is_pre_vec","f_days","f_all_days","whole_site_pre_vec","whole_site_post_vec","gap_vec", "f_enrollment_num_vec"]
+    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days,whole_site_pre_vec,whole_site_post_vec,gap_vec, f_enrollment_num_vec, whole_site_pre_enrollment_vec, whole_site_post_enrollment_vec, whole_site_pre_enrollment_id_vec, whole_site_post_enrollment_id_vec]
+    fv_debug = ["course_id_vec","is_last_vec", "use_vec", "is_next_vec","next_daynum_vec","is_pre_vec","f_days","f_all_days","whole_site_pre_vec","whole_site_post_vec","gap_vec", "f_enrollment_num_vec", "whole_site_pre_enrollment_vec", "whole_site_post_enrollment_vec", "whole_site_pre_enrollment_id_vec", "whole_site_post_enrollment_id_vec"]
     for j in range(len(fv)):
         vs = fv[j]
         if IS_DEBUG:
@@ -168,7 +197,11 @@ def get_features(id,IS_DEBUG=False):
         for (i, v) in enumerate(vs):
             f[start+i] = transfer(v)
         start = start + len(vs)
-    fs = "%s,%s,%s,%d,-%s,-%s,-%s,-%s,-%s,-%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, ",".join(["%.2f" % k for k in f]), f_last_5_record, f_user_site)
+    if IS_DEBUG:
+        print start
+    f = ",".join(["%.2f" % k for k in f])
+    fs = "%s,%s,%s,%d,-%s,-%s,-%s,-%s,-%s,-%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f)
+    #fs = "%s,%s,%s,%d,%s\n" % (y, id, course_id, len(days), f_last_day )
     return fs
 def filed():
     fout = open(featrue_filename,"w")

@@ -11,6 +11,11 @@ from common import *
 week = Week()
 
 class Obj:
+    def get_category_idx(self, module_id):
+        if module_id not in self.module_info:
+            return CATEGORY_VEC_NUM - 1
+        category = self.module_info[module_id][1]
+        return get_category_idx(category)
     def __init__(self):
         #course_id,module_id,category,children,start
         self.course_modules = {}

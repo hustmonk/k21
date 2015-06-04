@@ -19,11 +19,14 @@ from highuser import *
 import math
 from module import *
 from transfer import *
+from objweight import *
 
 class CommonFeature():
     def __init__(self):
         self.coursetimeinfo = CourseTimeInfo()
         self.obj = Obj()
+        self.objweight = ObjWeight()
+        self.objweight.load()
 
     def get_spend_time_idx(self, timesum):
         k = [2, 5, 10, 30, 60, 5*60, 10*60, 30 * 60, 60 * 60, 12 * 60 * 60]
@@ -115,12 +118,13 @@ class CommonFeature():
         time_idx = self.get_spend_time_idx(sqrt_timesum)
         sqrt_spend_time_count[time_idx] = 1
         buf = []
+        objw = self.objweight.get_features(infos)
         fp = [cc, len(infos), browser, server, timesum/60.0, sqrt_timesum/60.0]
         buf.append( "%.3f" % ((browser+3.1)/(float(len(infos))+6.5)))
         if isDebug:
             print fp
-        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count]
-        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count"]
+        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count, objw]
+        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count", "objw"]
         for j in range(len(fv)):
             vs = fv[j]
             if isDebug:

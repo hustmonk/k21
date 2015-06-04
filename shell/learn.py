@@ -15,7 +15,7 @@ def read(filename):
     Y = []
     ids = []
     for line in open(filename):
-        arr = line.strip().split(",")
+        arr = line.strip().replace("inf","1").split(",")
         y = int(arr[0])
         ids.append(arr[1])
 

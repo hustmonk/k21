@@ -21,6 +21,7 @@ from module import *
 from transfer import *
 from lastday import *
 from commonfeature import *
+from objweight import *
 import cPickle as pickle
 week = Week()
 class LastDayFeature:

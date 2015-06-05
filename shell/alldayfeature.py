@@ -54,6 +54,6 @@ class AllDayFeature:
 
 if __name__ == "__main__":
     daylevel = AllDayFeature()
-    #daylevel.build()
+    daylevel.build()
     daylevel.load()
     print daylevel.get_features("117502")

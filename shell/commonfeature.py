@@ -130,8 +130,8 @@ class CommonFeature():
         buf.append( "%.3f" % ((browser+3.1)/(float(len(infos))+6.5)))
         if isDebug:
             print fp
-        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count, objw,info_vec]
-        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count", "objw","info_vec"]
+        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count, objw]
+        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count", "objw"]
         for j in range(len(fv)):
             vs = fv[j]
             if isDebug:
@@ -201,8 +201,8 @@ class CommonFeature():
         buf.append( "%.3f" % ((browser+3.1)/(float(len(infos))+6.5)))
         if isDebug:
             print fp
-        fv = [event_count,weekday_count,hour_count, month_count, spend_time_count, sqrt_spend_time_count, fp, info_vec]
-        fv_debug = ["event_count","weekday_count","hour_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "info_vec"]
+        fv = [event_count,weekday_count,hour_count, month_count, spend_time_count, sqrt_spend_time_count, fp]
+        fv_debug = ["event_count","weekday_count","hour_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp"]
         for j in range(len(fv)):
             vs = fv[j]
             if isDebug:

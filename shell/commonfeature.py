@@ -121,8 +121,8 @@ class CommonFeature():
         objw = self.objweight.get_features(infos)
         info_vec = [0] * INFO_VEC_NUM
         k = len(infos)
-        if k > 5:
-            k = int(math.sqrt(k - 5 )) + 5
+        if k > 3:
+            k = int(math.sqrt(k - 3)) + 3
         if k > INFO_VEC_NUM-1:
             k = INFO_VEC_NUM-1
         info_vec[k] = 1

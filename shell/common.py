@@ -25,6 +25,12 @@ import math
 def transfer(v):
     return math.log(v+1)
 
+def get_gap_idx(v):
+    k = [1, 2, 3, 5, 8, 13, 20, 30, 50, 80, 150, 1000]
+    for i in range(len(k)):
+        if k[i] > v:
+            return i
+    return i
 EVENT_VEC_NUM = 7
 CATEGORY_VEC_NUM = 18
 WEEKDAY_VEC_NUM = 7

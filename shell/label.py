@@ -17,6 +17,11 @@ class Label:
     def get(self, id):
         return self.label_info.get(id, 0)
 
+    def contain(self,id):
+        if id not in self.label_info:
+            return False
+        return True
+
 if __name__ == "__main__":
     label = Label()
 

@@ -32,6 +32,14 @@ class Week:
         timeArray = time.localtime(times)
         otherStyleTime = time.strftime("%Y-%m-%dT%H:%M:%S", timeArray)
         return otherStyleTime
+    
+    def getnd(self, day, i):
+        k = self.times(day)
+        k = k + (self.timestamp("2014-06-07") - self.timestamp("2014-06-06")) * i
+        timeArray = time.localtime(k)
+        otherStyleTime = time.strftime("%Y-%m-%d", timeArray)
+        return otherStyleTime
+
 
 if __name__ == "__main__":
     week = Week()
@@ -44,3 +52,5 @@ if __name__ == "__main__":
     print week.diff('2014-07-11', '2014-07-05')
     print week.timestamp("2014-06-07") -  week.timestamp("2014-06-06")
     print week.times("2013-12-24T14:17:14")
+    for i in range(-10, 10):
+        print week.getnd("2014-06-07", i),i

@@ -25,6 +25,7 @@ from lastday import *
 from wholesitefeature import *
 from lastday5recordfeature import *
 from moreinfo import *
+from statistic import *
 week = Week()
 lastdayfeature = LastDayFeature()
 lastdayfeature.load()
@@ -51,6 +52,8 @@ wholesitefeature.load()
 ids = enrollment_train.ids
 moreinfo = MoreDayFeature()
 moreinfo.load()
+statistic = StatisticInfo()
+statistic.load()
 import math
 def transfer(v):
     return math.log(v+1)
@@ -118,7 +121,9 @@ def get_features(id,IS_DEBUG=False):
     whole_site_post_enrollment_vec[k2] = 1
     pre_num = 0
     post_num = 0
+    lastday = ""
     if len(days) > 0:
+        lastday = days[-1]
         for day in alldays:
             diff = week.diff(day,days[-1]) / 2
             if diff > 0:
@@ -153,6 +158,7 @@ def get_features(id,IS_DEBUG=False):
     f_day_level = daylevel.get_features(id)
     f_common = alldayfeature.get_features(id)
     f_user_site = wholesitefeature.get_features(username)
+    f_statistic = statistic.get_features(lastday, course_id)
     f_days = [0] * DAYS_VEC_NUM
     f_all_days = [0] * DAYS_VEC_NUM
     f_enrollment_num_vec = [0] * MAX_ENROLLMENT_VEC_NUM
@@ -200,7 +206,7 @@ def get_features(id,IS_DEBUG=False):
     if IS_DEBUG:
         print start
     f = ",".join(["%.2f" % k for k in f])
-    fs = "%s,%s,%s,%d,-%s,-%s,-%s,-%s,-%s,-%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f)
+    fs = "%s,%s,%s,%d,-%s,-%s,-%s,-%s,-%s,-%s,-%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic)
     #fs = "%s,%s,%s,%d,%s\n" % (y, id, course_id, len(days), f_last_day )
     return fs
 def filed():

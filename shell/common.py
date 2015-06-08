@@ -4,7 +4,7 @@
 
 """docstring
 """
-
+from weekend import *
 __revision__ = '0.1'
 
 event_key = "access,discussion,nagivate,page_close,problem,video,wiki".split(",")
@@ -26,7 +26,8 @@ def transfer(v):
     return math.log(v+1)
 
 def get_gap_idx(v):
-    k = [1, 2, 3, 5, 8, 13, 20, 30, 50, 80, 150, 1000]
+    #k = [1, 2, 3, 5, 8, 13, 20, 30, 50, 80, 150, 1000]
+    k = [1, 2, 3, 5, 7, 10, 13, 15, 18, 20, 25, 100000]
     for i in range(len(k)):
         if k[i] > v:
             return i
@@ -49,3 +50,30 @@ INFO_VEC_NUM=20
 #WEEKDAY_VEC_NUM = 7
 #HOUR_VEC_NUM = 12
 #CIDX_VEC_NUM = 10
+def get_enrollment_features(lastday, enrollment, username, lastdayinfo):
+    week = Week()
+    f = [0] * 4
+    if len(lastday) < 4:
+        return f
+    ids = enrollment.user_enrollment_id.get(username, [])
+    for id in ids:
+        days = lastdayinfo.get_days(id)
+        username, course_id = enrollment.enrollment_info.get(id)
+        bf = False
+        en = False
+        for day in days:
+            k = week.diff(lastday, day)
+            if k > 0:
+                bf = True
+            if k < 0:
+                en = True
+
+        if bf and en:
+            f[0] = 1
+        elif bf and en == False:
+            f[1] = 1
+        elif bf == False and en:
+            f[2] = 1
+        else:
+            f[3] = 1
+    return f

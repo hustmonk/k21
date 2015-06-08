@@ -28,9 +28,10 @@ class ObjWeight:
         enrollment = Enrollment("../data/train/enrollment_train.csv")
         label = Label()
         log = Log("../data/train/log_train.csv")
-        commonfeature = CommonFeature()
+        #commonfeature = CommonFeature()
         ccc = 0
         fs = {}
+        fs_unique = {}
 
         for id in enrollment.ids:
             y = int(label.get(id))
@@ -42,14 +43,24 @@ class ObjWeight:
                 continue
             #weight = 1.0 / math.sqrt(len(infos))
             weight = 1.0 / len(infos)
+            objs = set()
             for info in infos:
                 obj = info[-1]
                 self.add(fs, obj, weight, y)
-            self.add(fs, "OBJ", weight, y)
+                objs.add(obj)
+            weight = 1.0 / len(objs)
+            for obj in objs:
+                obj = info[-1]
+                self.add(fs_unique, obj, weight, y)
+            self.add(fs, "OBJ", 1, y)
         modelFileSave = open('_feature/objweight.info.model', 'wb')
-        pickle.dump(fs, modelFileSave)
+        k = {}
+        k["fs"] = fs
+        k["fs_unique"] = fs_unique
+        pickle.dump(k, modelFileSave)
         modelFileSave.close()
         print "build ObjWeight over!"
+
     def add(self, fs, obj, weight, y):
         if obj not in fs:
             fs[obj] = [weight, y * weight]
@@ -59,21 +70,26 @@ class ObjWeight:
 
     def load(self):
         modelFileLoad = open('_feature/objweight.info.model', 'rb')
-        self.fs = pickle.load(modelFileLoad)
+        k = pickle.load(modelFileLoad)
+        self.fs = k["fs"]
+        self.fs_unique = k["fs_unique"]
         self.weight_default = self.fs["OBJ"]
         #print self.weight_default
         self.weight_default = self.weight_default[0]/self.weight_default[1]
 
-    def get_weight(self, id):
-        if id not in self.fs:
+    def get_weight(self, id, fs):
+        if id not in fs:
             return 1.0
-        weight = self.fs[id]
+        weight = fs[id]
         #print weight
         weight = [weight[0] + self.weight_default * 10, weight[1]+10]
         weight = weight[0]/weight[1]
         return weight/self.weight_default
 
     def get_features(self, infos):
+        return self._get_features(infos,self.fs_unique) + self._get_features(infos,self.fs)
+
+    def _get_features(self, infos, kps):
         kv = {}
         for info in infos:
             obj = info[-1]
@@ -85,7 +101,7 @@ class ObjWeight:
         l2 = 0
         l3 = 0
         for (k, v) in kv.items():
-            _weight = self.get_weight(k)
+            _weight = self.get_weight(k, kps)
             if v > 30:
                 v = 30
             l1 = l1 + v
@@ -99,12 +115,11 @@ class ObjWeight:
         if l3 < 1:
             return [1,1,1,1,1,1]
         weights = [weight1, weight2, weight3, math.pow(weight1, 1.0/l1), math.pow(weight2, 1.0/l2), math.pow(weight3, 1.0/l3)]
-
         return weights
 
 if __name__ == "__main__":
     daylevel = ObjWeight()
     #daylevel.build()
     daylevel.load()
-    print daylevel.get_weight("RMtgC2bTAqEeftenUUyia504wsyzeZWf")
+    #print daylevel.get_weight("RMtgC2bTAqEeftenUUyia504wsyzeZWf")
     print daylevel.get_features([["RMtgC2bTAqEeftenUUyia504wsyzeZWf"]])

@@ -196,7 +196,7 @@ def get_features(id,IS_DEBUG=False):
         dy_num = DAYS_VEC_NUM-1
     f_all_days[dy_num] = 1
 
-    f = [0] * 310
+    f = [0] * 322
     f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
     f[1] = transfer(enrollment_num)
     f[2] = transfer(len(days))
@@ -204,6 +204,7 @@ def get_features(id,IS_DEBUG=False):
 
     fv_no_transfer = [transfer_vec]
     fv_no_transfer_debug = ["transfer_vec"]
+    enrollment_vec = get_enrollment_features(lastday, enrollment, username, lastdayinfo)
     start = 4
     for j in range(len(fv_no_transfer)):
         vs = fv_no_transfer[j]
@@ -214,8 +215,8 @@ def get_features(id,IS_DEBUG=False):
         start = start + len(vs)
 
     #fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days,whole_site_pre_vec,whole_site_post_vec,gap_vec, f_enrollment_num_vec, whole_site_pre_enrollment_vec, whole_site_post_enrollment_vec, whole_site_pre_enrollment_id_vec, whole_site_post_enrollment_id_vec, hold_day_in_enrollment_vec,hold_day_in_site_vec,hold_day_after_in_site_vec]
-    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days,whole_site_pre_vec,whole_site_post_vec,gap_vec, f_enrollment_num_vec, whole_site_pre_enrollment_vec, whole_site_post_enrollment_vec, whole_site_pre_enrollment_id_vec, whole_site_post_enrollment_id_vec]
-    fv_debug = ["course_id_vec","is_last_vec", "use_vec", "is_next_vec","next_daynum_vec","is_pre_vec","f_days","f_all_days","whole_site_pre_vec","whole_site_post_vec","gap_vec", "f_enrollment_num_vec", "whole_site_pre_enrollment_vec", "whole_site_post_enrollment_vec", "whole_site_pre_enrollment_id_vec", "whole_site_post_enrollment_id_vec", "hold_day_in_enrollment_vec","hold_day_in_site_vec","hold_day_after_in_site_vec"]
+    fv = [course_id_vec,is_last_vec, use_vec, is_next_vec,next_daynum_vec,is_pre_vec,f_days,f_all_days,whole_site_pre_vec,whole_site_post_vec,gap_vec, f_enrollment_num_vec, whole_site_pre_enrollment_vec, whole_site_post_enrollment_vec, whole_site_pre_enrollment_id_vec, whole_site_post_enrollment_id_vec, enrollment_vec]
+    fv_debug = ["course_id_vec","is_last_vec", "use_vec", "is_next_vec","next_daynum_vec","is_pre_vec","f_days","f_all_days","whole_site_pre_vec","whole_site_post_vec","gap_vec", "f_enrollment_num_vec", "whole_site_pre_enrollment_vec", "whole_site_post_enrollment_vec", "whole_site_pre_enrollment_id_vec", "whole_site_post_enrollment_id_vec", "hold_day_in_enrollment_vec","hold_day_in_site_vec","hold_day_after_in_site_vec", "enrollment_vec"]
     for j in range(len(fv)):
         vs = fv[j]
         if IS_DEBUG:

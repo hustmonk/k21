@@ -65,6 +65,8 @@ class StatisticInfo:
                     dropcount_by_course[course_id] = {}
                 count_by_course[course_id][lastday] = count_by_course[course_id].get(lastday, 0) + 1
                 dropcount_by_course[course_id][lastday] = dropcount_by_course[course_id].get(lastday, 0) + y
+                for day in days[:-1]:
+                    count_by_course[course_id][day] = count_by_course[course_id].get(day, 0) + 1
 
                 count[lastday] = count.get(lastday, 0) + 1
                 dropcount[lastday] = dropcount.get(lastday, 0) + y
@@ -132,7 +134,7 @@ class StatisticInfo:
         self.first_day_by_course_id = statistic["first_day_by_course_id"]
 
     def get_features(self, day, course_id, days):
-        f = [0] * 83
+        f = [0] * 88
         f[0] = self.ratio_course_id[course_id]
         f[1] = self.ratio_course_id_first[course_id]
         for i in range(21):
@@ -152,15 +154,16 @@ class StatisticInfo:
             if idx >= 0 and idx < 30:
                 f[start + idx] = 1
         """
-        for i in range(11):
+        start = 83
+        for i in range(5):
             default = self.ratio_course_id[course_id]
             if len(day) < 4:
                 f[start+i] = default
             else:
-                k = i - 5
+                k = i - 2
                 nd = week.getnd(day, k)
                 f[start+i] = self.ratio_day_by_course_id[course_id].get(nd, default)
-        """ #overfit
+        """
         return ",".join(["%.3f" % k for k in f])
 
 if __name__ == "__main__":

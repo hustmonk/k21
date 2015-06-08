@@ -238,6 +238,7 @@ def filed():
         if ccc % 5000 == 0:
             print ccc
         fout.write(fs)
+    print "build over!!!"
 def single(id, True):
     print get_features(id, True)
 

@@ -48,11 +48,11 @@ class ObjWeight:
                 obj = info[-1]
                 self.add(fs, obj, weight, y)
                 objs.add(obj)
+            self.add(fs, "OBJ", weight, y)
             weight = 1.0 / len(objs)
             for obj in objs:
                 obj = info[-1]
                 self.add(fs_unique, obj, weight, y)
-            self.add(fs, "OBJ", 1, y)
         modelFileSave = open('_feature/objweight.info.model', 'wb')
         k = {}
         k["fs"] = fs
@@ -88,6 +88,7 @@ class ObjWeight:
 
     def get_features(self, infos):
         return self._get_features(infos,self.fs_unique) + self._get_features(infos,self.fs)
+        #return self._get_features(infos,self.fs)
 
     def _get_features(self, infos, kps):
         kv = {}

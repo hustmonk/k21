@@ -196,7 +196,7 @@ def get_features(id,IS_DEBUG=False):
         dy_num = DAYS_VEC_NUM-1
     f_all_days[dy_num] = 1
 
-    f = [0] * 308
+    f = [0] * 313
     f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
     f[1] = transfer(math.sqrt(len(enrollment.course_info.get(course_id, []))))
     f[2] = transfer(enrollment_num)

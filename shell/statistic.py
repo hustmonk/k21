@@ -164,7 +164,7 @@ class StatisticInfo:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 0 and idx < 30:
                 idx = idx / 3
-                f[start + idx] = 1
+                f[start + idx] = 1 + f[start + idx]
         start = 94
         for d in alldays:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
@@ -187,7 +187,7 @@ class StatisticInfo:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 0 and idx < 30:
                 idx = idx / 3
-                f[start + idx] = 1
+                f[start + idx] = f[start + idx] + 1
         """
         start = 83
         for i in range(5):

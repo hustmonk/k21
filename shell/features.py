@@ -228,7 +228,7 @@ def get_features(id,IS_DEBUG=False):
     if IS_DEBUG:
         print start
     f = ",".join(["%.2f" % k for k in f])
-    fs = "%s,%s,%s,%d,-%s,-%s,-%s,-%s,-%s,-%s,-%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic)
+    fs = "%s,%s,%s,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic)
     #fs = "%s,%s,%s,%d,%s\n" % (y, id, course_id, len(days), f_last_day )
     return fs
 def filed():

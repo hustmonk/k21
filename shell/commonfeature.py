@@ -40,6 +40,7 @@ class CommonFeature():
         event_count = [0] * EVENT_VEC_NUM
         category_count = [0] * CATEGORY_VEC_NUM
         u_event_count = [0] * EVENT_VEC_NUM
+        uday_event_count = [0] * EVENT_VEC_NUM
         event_timesum = [0] * EVENT_VEC_NUM
         event_sqrt_timesum = [0] * EVENT_VEC_NUM
         weekday_count = [0] * WEEKDAY_VEC_NUM
@@ -93,6 +94,8 @@ class CommonFeature():
 
             if info[2]+info[-1] not in u_event_dict:
                 u_event_count[event_idx] = u_event_count[event_idx] + 1
+            if day+info[2]+info[-1] not in u_event_dict:
+                uday_event_count[event_idx] = uday_event_count[event_idx] + 1
             u_event_dict[info[2]+info[-1]] = 1
             event_count[event_idx] = event_count[event_idx] + 1
 
@@ -135,8 +138,8 @@ class CommonFeature():
         #event_isclick_count[k] = 1
         #print k
         
-        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count, objw, event_isclick_count]
-        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count", "objw", "event_isclick_count"]
+        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count, objw, event_isclick_count, uday_event_count]
+        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count", "objw", "event_isclick_count", "uday_event_count"]
         for j in range(len(fv)):
             vs = fv[j]
             if isDebug:

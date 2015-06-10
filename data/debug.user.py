@@ -50,4 +50,5 @@ for line in open("../shell/train2.txt"):
         print len(feature)
         for i in range(len(feature)):
             x = feature[i] * clf.coef_[0, i]
+            #if x > 1 or x < -1:
             print i, feature[i], clf.coef_[0, i],feature[i] * clf.coef_[0, i]

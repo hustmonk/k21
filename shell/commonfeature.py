@@ -91,7 +91,7 @@ class CommonFeature():
             category_idx = self.obj.get_category_idx(info[3])
             category_count[category_idx] = category_count[category_idx] + 1
 
-            if info[2]+info[-1] in u_event_dict:
+            if info[2]+info[-1] not in u_event_dict:
                 u_event_count[event_idx] = u_event_count[event_idx] + 1
             u_event_dict[info[2]+info[-1]] = 1
             event_count[event_idx] = event_count[event_idx] + 1

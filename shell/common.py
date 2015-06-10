@@ -13,6 +13,7 @@ category_map = {}
 event_map = {}
 for k in event_key:
     event_map[k] = len(event_map)
+    print k,event_map[k]
 
 for k in category_key:
     category_map[k] = len(category_map)
@@ -50,13 +51,15 @@ INFO_VEC_NUM=20
 #WEEKDAY_VEC_NUM = 7
 #HOUR_VEC_NUM = 12
 #CIDX_VEC_NUM = 10
-def get_enrollment_features(lastday, enrollment, username, lastdayinfo):
+def get_enrollment_features(lastday, enrollment, username, lastdayinfo, _id):
     week = Week()
     f = [0] * 4
     if len(lastday) < 4:
         return f
     ids = enrollment.user_enrollment_id.get(username, [])
     for id in ids:
+        if _id == id:
+            continue
         days = lastdayinfo.get_days(id)
         username, course_id = enrollment.enrollment_info.get(id)
         bf = False

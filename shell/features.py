@@ -177,7 +177,7 @@ def get_features(id,IS_DEBUG=False):
     f_day_level = daylevel.get_features(id)
     f_common = alldayfeature.get_features(id)
     f_user_site = wholesitefeature.get_features(username)
-    f_statistic = statistic.get_features(lastday, course_id, alldays)
+    f_statistic = statistic.get_features(lastday, course_id, days, alldays)
     f_days = [0] * DAYS_VEC_NUM
     f_all_days = [0] * DAYS_VEC_NUM
     f_enrollment_num_vec = [0] * MAX_ENROLLMENT_VEC_NUM
@@ -196,16 +196,17 @@ def get_features(id,IS_DEBUG=False):
         dy_num = DAYS_VEC_NUM-1
     f_all_days[dy_num] = 1
 
-    f = [0] * 322
+    f = [0] * 308
     f[0] = transfer(len(enrollment.course_info.get(course_id, [])))
-    f[1] = transfer(enrollment_num)
-    f[2] = transfer(len(days))
-    f[3] = transfer(len(alldays))
+    f[1] = transfer(math.sqrt(len(enrollment.course_info.get(course_id, []))))
+    f[2] = transfer(enrollment_num)
+    f[3] = transfer(len(days))
+    f[4] = transfer(len(alldays))
 
     fv_no_transfer = [transfer_vec]
     fv_no_transfer_debug = ["transfer_vec"]
-    enrollment_vec = get_enrollment_features(lastday, enrollment, username, lastdayinfo)
-    start = 4
+    enrollment_vec = get_enrollment_features(lastday, enrollment, username, lastdayinfo, id)
+    start = 5
     for j in range(len(fv_no_transfer)):
         vs = fv_no_transfer[j]
         if IS_DEBUG:

@@ -26,7 +26,7 @@ class Transfer():
                 diff = week.diff(day2, day1) - 1
                 if diff > TRANSFER_VEC_NUM-1:
                     diff = TRANSFER_VEC_NUM-1
-            total[day1][diff] = total[day1][diff] + 1
+                total[day1][diff] = total[day1][diff] + 1
 
         ratio = {}
         for (d, info) in total.items():

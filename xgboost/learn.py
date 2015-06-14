@@ -8,22 +8,24 @@
 __revision__ = '0.1'
 import math
 import sys
-from model import *
+#from model import *
+from xgboost_class import *
 #from randomforest import *
+#from net6 import *
 def read(filename):
     X = []
     Y = []
     ids = []
     for line in open(filename):
-        arr = line.strip().replace("inf","1").split(",")
+        arr = line.strip().split(",")
         y = int(arr[0])
         ids.append(arr[1])
 
-        x = [ math.sqrt(math.fabs(float(k))) for k in arr[3:]]
+        x = [ math.sqrt(float(k)) for k in arr[3:]]
         X.append(x)
         Y.append(y)
         """
-        if len(X) > 20000:
+        if len(X) > 2000:
             break
         """
     return X,Y,ids

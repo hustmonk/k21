@@ -17,10 +17,12 @@ for line in open("sub.csv.1"):
 for line in open("sub.csv.2"):
     id,p = line.split(",")
     psd[id] = float(p)
+"""
 for line in open("../tovw/test.txt.pred"):
     p, id = line.strip().split(" ")
     p = (float(p) + 1 )/2.0
     #psd[id] = psd[id] * p
+"""
 
 fout = open("sub01.csv", "w")
 ps = []

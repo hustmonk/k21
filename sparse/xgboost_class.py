@@ -18,9 +18,18 @@ logging.config.fileConfig("log.conf")
 logger = logging.getLogger("example")
 
 class Model():
+    def read(self):
+        dtrain = xgb.DMatrix("train.buffer")
+        dtest = xgb.DMatrix("test.buffer")
+        evallist  = [(dtest,'eval'), (dtrain,'train')]
+        num_round = 500
+        self._train(dtrain,dtest,evallist,num_round,"XY",True,[],[],2)
+
     def train(self, X_train, y_train, X_test, ids_test, y_test, outfile, is_valid):
         dtrain = xgb.DMatrix( X_train, label=y_train)
+        dtrain.save_binary("train.buffer")
         dtest = xgb.DMatrix( X_test, missing = -999.0, label=y_test )
+        dtest.save_binary("test.buffer")
         if is_valid:
             evallist  = [(dtest,'eval'), (dtrain,'train')]
         else:
@@ -29,7 +38,7 @@ class Model():
         if is_valid:
             self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,2)
         else:
-            for i in range(100):
+            for i in range(10):
                 self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,i)
 
     def _train(self, dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,seed):
@@ -41,18 +50,13 @@ class Model():
         sys.stdout.flush()
         bst = xgb.train( plst, dtrain, num_round, evallist )
         preds = bst.predict( dtest )
-        if is_valid:
-            roc_auc = metrics.roc_auc_score(y_test, preds)
-            logger.info(roc_auc)
-            print roc_auc,len(y_test)
-        if is_valid:
-            fout = open(outfile + ".debug", "w")
-            for i in range(len(ids_test)):
-                fout.write("%s,%.3f,%d\n" % (ids_test[i], preds[i], y_test[i]) )
-            fout.close()
-        else:
+        if is_valid == False :
             fout = open("merge/"+outfile+str(seed), "w")
             for i in range(len(ids_test)):
                 fout.write("%s,%.3f\n" % (ids_test[i], preds[i]) )
             fout.close()
         return preds
+
+if __name__ == "__main__":
+    model = Model()
+    model.read()

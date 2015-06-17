@@ -27,9 +27,9 @@ class Model():
 
     def train(self, X_train, y_train, X_test, ids_test, y_test, outfile, is_valid):
         dtrain = xgb.DMatrix( X_train, label=y_train)
-        dtrain.save_binary("train.buffer")
+        #dtrain.save_binary("train.buffer")
         dtest = xgb.DMatrix( X_test, missing = -999.0, label=y_test )
-        dtest.save_binary("test.buffer")
+        #dtest.save_binary("test.buffer")
         if is_valid:
             evallist  = [(dtest,'eval'), (dtrain,'train')]
         else:
@@ -42,14 +42,22 @@ class Model():
                 self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,i)
 
     def _train(self, dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,seed):
-        param = {'bst:max_depth':4, "bst:min_child_weight":10, "bst:subsample":0.8, 'bst:eta':0.08, 'silent':1, 'objective':'binary:logistic',"lambda":0.1,"min_child_weight":10,"n_estimators":1000,"learning_rate":0.025,"seed":seed}
+        param = {'max_depth':100, "min_child_weight":6, "subsample":0.7, 'eta':0.03, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed}
         param['nthread'] = 4
         plst = param.items()
         plst += [('eval_metric', 'auc')] # Multiple evals can be handled in this way
         print plst
         sys.stdout.flush()
-        bst = xgb.train( plst, dtrain, num_round, evallist )
+        evals_result={}
+        bst = xgb.train( plst, dtrain, num_round, evallist, evals_result=evals_result)
+        bst.save_model('0001.model')
+        bst.dump_model('dump.raw.txt')
         preds = bst.predict( dtest )
+        #evals_result  = bst.get_fscore()
+        fout = open("evals/evals_result", "w")
+        for (k,v) in evals_result.items():
+            fout.write("%s\t%s\n" % (k,v))
+        fout.close()
         if is_valid == False :
             fout = open("merge/"+outfile+str(seed), "w")
             for i in range(len(ids_test)):

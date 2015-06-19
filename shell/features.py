@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -178,6 +178,7 @@ def get_features(id,IS_DEBUG=False):
     f_common = alldayfeature.get_features(id)
     f_user_site = wholesitefeature.get_features(username)
     f_statistic = statistic.get_features(lastday, course_id, days, alldays)
+    f_statistic_start_idx = statistic.get_start_idx(lastday, course_id)
     f_days = [0] * DAYS_VEC_NUM
     f_all_days = [0] * DAYS_VEC_NUM
     f_enrollment_num_vec = [0] * MAX_ENROLLMENT_VEC_NUM
@@ -228,7 +229,7 @@ def get_features(id,IS_DEBUG=False):
     if IS_DEBUG:
         print start
     f = ",".join(["%.2f" % k for k in f])
-    fs = "%s,%s,%s,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic)
+    fs = "%s,%s,%s,%d,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_statistic_start_idx, f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic)
     #fs = "%s,%s,%s,%d,%s\n" % (y, id, course_id, len(days), f_last_day )
     return fs
 def filed():

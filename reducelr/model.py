@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 import math
 from sklearn import linear_model, decomposition, datasets
@@ -18,7 +18,8 @@ logger = logging.getLogger("example")
 
 class Model():
     def train(self, X_train, y_train, X_test, ids_test, y_test, outfile, is_valid):
-        clf = linear_model.LogisticRegression()
+        clf = linear_model.LogisticRegression(verbose=1,C=0.01,tol=0.000001)
+        print clf
         """
         if is_valid:
             scores = cross_validation.cross_val_score(clf, X_train, y_train, cv=5, scoring='roc_auc')

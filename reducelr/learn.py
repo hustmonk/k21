@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -10,10 +10,11 @@ import math
 import sys
 from model import *
 kv = {}
-for line in open("../xgboost/evals_result"):
+for line in open("evals_result"):
     k,v = line[1:].strip().split("\t")
-    if int(v) > 0:
-        kv[int(k)] = v
+    if int(v) > 5:
+        kv[int(k)+1] = len(kv)
+print len(kv)
 def read(filename):
     X = []
     Y = []
@@ -22,12 +23,18 @@ def read(filename):
         arr = line.strip().split(",")
         y = int(arr[0])
         ids.append(arr[1])
+        iday = int(arr[4])
 
         arr = [ math.sqrt(float(k)) for k in arr[3:]]
-        x = []
+        x = [0] * (len(arr) + len(kv) * 2)
+        for i in range(len(arr)):
+            x[i] = arr[i]
         for i in range(len(arr)):
             if i in kv:
-                x.append(arr[i])
+                if iday > 15:
+                    x[len(arr) + kv[i]] = arr[i]
+                else:
+                    x[len(arr) + len(kv) + kv[i]] = arr[i]
         X.append(x)
         Y.append(y)
         """

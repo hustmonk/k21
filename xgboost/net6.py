@@ -1,5 +1,5 @@
 import numpy as np
-import pandas as pd
+#import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 import site;
@@ -42,7 +42,6 @@ class Model():
         num_features = X.shape[1]
 
         layers0 = [('input', InputLayer),
-           ('dropout0', DropoutLayer),
            ('dense1', DenseLayer),
            ('dropout1', DropoutLayer),
            ('dense2', DenseLayer),
@@ -51,10 +50,9 @@ class Model():
 
         net0 = NeuralNet(layers=layers0,
                  input_shape=(None, num_features),
-                 dropout0_p=0.35,
-                 dense1_num_units=2500,
+                 dense1_num_units=3500,
                  dropout1_p=0.4,
-                 dense2_num_units=300,
+                 dense2_num_units=2300,
                  dropout2_p=0.5,
                  output_num_units=num_classes,
                  output_nonlinearity=softmax,

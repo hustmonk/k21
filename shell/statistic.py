@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -218,7 +218,10 @@ class StatisticInfo:
                 f[start+i] = self.ratio_day_by_course_id[course_id].get(nd, default)
         """
         return ",".join(["%.3f" % k for k in f])
-
+    def get_start_idx(self, day, course_id):
+        if len(day) < 4:
+            return 0
+        return week.diff(day, self.first_day_by_course_id[course_id])
 if __name__ == "__main__":
     statistic = StatisticInfo()
     statistic.build()

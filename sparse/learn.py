@@ -10,24 +10,46 @@ import math
 import sys
 #from model import *
 from xgboost_class import *
+from scipy.sparse import *
+from scipy import *
 #from randomforest import *
 #from net6 import *
 def read(filename):
-    X = []
+    X1 = []
+    X2 = []
+    v = []
     Y = []
     ids = []
+    idx = 0
+    max_iday = 0
     for line in open(filename):
         arr = line.strip().split(",")
         y = int(arr[0])
         ids.append(arr[1])
-
-        x = [ float(k) for k in arr[3:]]
-        X.append(x)
+        iday = int(arr[3]) + 1
+        if iday > 5 and iday < 7:
+            iday = 5
+        elif iday >= 7:
+            iday = 6
+        if iday > max_iday:
+            max_iday = iday
+        arr = arr[3:]
+        for i in range(len(arr)):
+            if float(arr[i]) > 0.0001:
+                X1.append(idx)
+                X2.append(i)
+                v.append(float(arr[i]))
+                X1.append(idx)
+                X2.append(i + iday * len(arr[i]))
+                v.append(float(arr[i]))
         Y.append(y)
+        idx += 1
         """
-        if len(X) > 2000:
+        if len(Y) > 2000:
             break
         """
+    print max_iday
+    X = csr_matrix((array(v),(array(X1),array(X2))), shape=(idx,len(arr) * max_iday))
     return X,Y,ids
 
 X_train, y_train, ids_train = read(sys.argv[1])

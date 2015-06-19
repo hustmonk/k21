@@ -16,7 +16,7 @@ import cPickle as pickle
 import xgboost as xgb
 logging.config.fileConfig("log.conf")
 logger = logging.getLogger("example")
-
+import random
 class Model():
     def read(self):
         dtrain = xgb.DMatrix("train.buffer")
@@ -40,12 +40,15 @@ class Model():
         else:
             for i in range(10):
                 self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,i)
-
+    def getrand(self):
+        return random.randint(0,20) - 10
     def _train(self, dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,seed):
-        param = {'max_depth':100, "min_child_weight":6, "subsample":0.7, 'eta':0.03, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed}
-        param['nthread'] = 4
+        #cole:0.4|mint:6|sube:0.9|etaa:0.05|gama:15|lama:5 0.897681 0.897757
+        if  is_valid:
+            param = {'max_depth':100, "min_child_weight":6, "subsample":0.9, 'eta':0.05, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed, 'nthread':4,'eval_metric':'auc'}
+        else:
+            param = {'max_depth':100, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01, 'eta':0.05+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',"lambda":5+self.getrand()*0.1,"gamma":15+self.getrand()*0.2,"colsample_bytree":0.4+self.getrand()*0.01,"seed":seed, 'nthread':4,'eval_metric':'auc'}
         plst = param.items()
-        plst += [('eval_metric', 'auc')] # Multiple evals can be handled in this way
         print plst
         sys.stdout.flush()
         evals_result={}

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "learn.py", line 49, in <module>
+    X_train, y_train, ids_train = read(sys.argv[1])
+  File "learn.py", line 29, in read
+    iday = int(arr[4])/2
+ValueError: invalid literal for int() with base 10: '+0.493'

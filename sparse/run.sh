@@ -4,10 +4,8 @@ command="1"
 function valid() {
     echo "valid"
     dt=`date +"%s"`
-    >logs/$dt
-    nohup python learn.py ../shell/train1.txt ../shell/train2.txt valid.txt 1 >logs/$dt &
+    python learn.py ../shell/train1.txt ../shell/train2.txt valid.txt 1
     #nohup python learn.py ../shell/train1.txt.transfer ../shell/train2.txt.transfer valid.txt 1 >logs/$dt &
-    tail -f logs/$dt
 }
 function sub() {
     echo "sub"

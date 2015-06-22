@@ -14,6 +14,12 @@ from scipy.sparse import *
 from scipy import *
 #from randomforest import *
 #from net6 import *
+def getidx(day):
+    ls = [2, 4, 7, 11, 21, 100]
+    for i in range(len(ls)):
+        if day < ls[i]:
+            return i
+    return i-1
 def read(filename):
     X1 = []
     X2 = []
@@ -26,21 +32,14 @@ def read(filename):
         arr = line.strip().split(",")
         y = int(arr[0])
         ids.append(arr[1])
-        iday = int(arr[3]) + 1
-        if iday > 5 and iday < 7:
-            iday = 5
-        elif iday >= 7:
-            iday = 6
+        iday = getidx(int(arr[3]))
         if iday > max_iday:
             max_iday = iday
         arr = arr[3:]
         for i in range(len(arr)):
             if float(arr[i]) > 0.0001:
                 X1.append(idx)
-                X2.append(i)
-                v.append(float(arr[i]))
-                X1.append(idx)
-                X2.append(i + iday * len(arr[i]))
+                X2.append(i + iday * len(arr))
                 v.append(float(arr[i]))
         Y.append(y)
         idx += 1
@@ -49,7 +48,7 @@ def read(filename):
             break
         """
     print max_iday
-    X = csr_matrix((array(v),(array(X1),array(X2))), shape=(idx,len(arr) * max_iday))
+    X = csr_matrix((array(v),(array(X1),array(X2))), shape=(idx,len(arr) * (max_iday+1)))
     return X,Y,ids
 
 X_train, y_train, ids_train = read(sys.argv[1])

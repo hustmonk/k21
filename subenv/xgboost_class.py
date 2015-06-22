@@ -48,10 +48,9 @@ class Model():
     def _train(self, dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,seed):
         #cole:0.4|mint:6|sube:0.9|etaa:0.05|gama:15|lama:5 0.897681 0.897757
         if  is_valid:
-            param = {'max_depth':20, "min_child_weight":6, "subsample":0.9, 'eta':0.05, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed, 'nthread':4,'eval_metric':'auc'}
+            param = {'max_depth':100, "min_child_weight":6, "subsample":0.9, 'eta':0.05, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed, 'nthread':4,'eval_metric':'auc'}
         else:
-            #cole:0.4|mint:6|sube:0.8|etaa:0.06|gama:15|lama:5 0.896733 0.896735
-            param = {'max_depth':20, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01, 'eta':0.05+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',"lambda":5+self.getrand()*0.1,"gamma":15+self.getrand()*0.2,"colsample_bytree":0.4+self.getrand()*0.01,"seed":seed, 'nthread':4,'eval_metric':'auc'}
+            param = {'max_depth':100, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01, 'eta':0.05+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',"lambda":5+self.getrand()*0.1,"gamma":15+self.getrand()*0.2,"colsample_bytree":0.4+self.getrand()*0.01,"seed":seed, 'nthread':4,'eval_metric':'auc'}
         plst = param.items()
         print plst
         sys.stdout.flush()
@@ -61,12 +60,10 @@ class Model():
         bst.dump_model('dump.raw.txt')
         preds = bst.predict( dtest )
         #evals_result  = bst.get_fscore()
-        """
         fout = open("evals/evals_result", "w")
         for (k,v) in evals_result.items():
             fout.write("%s\t%s\n" % (k,v))
         fout.close()
-        """
         if is_valid == False :
             fout = open("merge/"+outfile+str(seed), "w")
             for i in range(len(ids_test)):

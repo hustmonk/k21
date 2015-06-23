@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 import math
 from sklearn import linear_model, decomposition, datasets
@@ -27,9 +27,9 @@ class Model():
 
     def train(self, X_train, y_train, X_test, ids_test, y_test, outfile, is_valid):
         dtrain = xgb.DMatrix( X_train, label=y_train)
-        dtrain.save_binary("train.buffer")
+        #dtrain.save_binary("train.buffer")
         dtest = xgb.DMatrix( X_test, missing = -999.0, label=y_test )
-        dtest.save_binary("test.buffer")
+        #dtest.save_binary("test.buffer")
         if is_valid:
             evallist  = [(dtest,'eval'), (dtrain,'train')]
         else:
@@ -38,7 +38,7 @@ class Model():
         if is_valid:
             self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,2)
         else:
-            for i in range(10):
+            for i in range(5, 10):
                 self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,i)
     def getrand(self):
         return random.randint(0,20) - 10
@@ -47,7 +47,8 @@ class Model():
         if  is_valid:
             param = {'max_depth':100, "min_child_weight":6, "subsample":0.9, 'eta':0.05, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed, 'nthread':4,'eval_metric':'auc'}
         else:
-            param = {'max_depth':100, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01, 'eta':0.05+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',"lambda":5+self.getrand()*0.1,"gamma":15+self.getrand()*0.2,"colsample_bytree":0.4+self.getrand()*0.01,"seed":seed, 'nthread':4,'eval_metric':'auc'}
+            #cole:0.4|mint:6|sube:0.9|etaa:0.02|gama:15|lama:5 0.897385 0.897394
+            param = {'max_depth':50, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01, 'eta':0.02+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',"lambda":5+self.getrand()*0.1,"gamma":15+self.getrand()*0.2,"colsample_bytree":0.4+self.getrand()*0.01,"seed":seed, 'nthread':4,'eval_metric':'auc'}
         plst = param.items()
         print plst
         sys.stdout.flush()

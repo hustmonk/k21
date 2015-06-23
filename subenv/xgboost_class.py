@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 import math
 from sklearn import linear_model, decomposition, datasets
@@ -22,7 +22,7 @@ class Model():
         dtrain = xgb.DMatrix("train.buffer")
         dtest = xgb.DMatrix("test.buffer")
         evallist  = [(dtest,'eval'), (dtrain,'train')]
-        num_round = 500
+        num_round = 450
         self._train(dtrain,dtest,evallist,num_round,"XY",True,[],[],2)
 
     def train(self, X_train, y_train, X_test, ids_test, y_test, outfile, is_valid):
@@ -37,7 +37,7 @@ class Model():
             exit(-1)
         else:
             evallist  = [(dtrain,'train')]
-        num_round = 500
+        num_round = 450
         if is_valid:
             self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,2)
         else:
@@ -50,7 +50,12 @@ class Model():
         if  is_valid:
             param = {'max_depth':100, "min_child_weight":6, "subsample":0.9, 'eta':0.05, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed, 'nthread':4,'eval_metric':'auc'}
         else:
-            param = {'max_depth':100, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01, 'eta':0.05+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',"lambda":5+self.getrand()*0.1,"gamma":15+self.getrand()*0.2,"colsample_bytree":0.4+self.getrand()*0.01,"seed":seed, 'nthread':4,'eval_metric':'auc'}
+            #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6
+            param = {'max_depth':10, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01,
+                    'eta':0.03+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',
+                    "lambda":6+self.getrand()*0.1,"gamma":10+self.getrand()*0.2,
+                    "colsample_bytree":0.6+self.getrand()*0.01,"seed":seed,
+                    'nthread':4,'eval_metric':'auc'}
         plst = param.items()
         print plst
         sys.stdout.flush()
@@ -60,10 +65,12 @@ class Model():
         bst.dump_model('dump.raw.txt')
         preds = bst.predict( dtest )
         #evals_result  = bst.get_fscore()
+        """
         fout = open("evals/evals_result", "w")
         for (k,v) in evals_result.items():
             fout.write("%s\t%s\n" % (k,v))
         fout.close()
+        """
         if is_valid == False :
             fout = open("merge/"+outfile+str(seed), "w")
             for i in range(len(ids_test)):

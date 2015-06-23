@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -26,7 +26,7 @@ def read(filename):
         arr = line.strip().split(",")
         y = int(arr[0])
         ids.append(arr[1])
-        iday = int(arr[4])/2
+        iday = int(arr[4])/2 + 1
         if iday > max_iday:
             max_iday = iday
         arr = arr[3:]
@@ -36,14 +36,16 @@ def read(filename):
                 X2.append(i)
                 v.append(float(arr[i]))
                 X1.append(idx)
-                X2.append(i + iday * len(arr[i]))
+                X2.append(i + iday * len(arr))
                 v.append(float(arr[i]))
         Y.append(y)
         idx += 1
+        """
         if len(Y) > 2000:
             break
+        """
     print max_iday
-    X = csr_matrix((array(v),(array(X1),array(X2))), shape=(idx,len(arr) * max_iday))
+    X = csr_matrix((array(v),(array(X1),array(X2))), shape=(idx,len(arr) * (max_iday+1)))
     return X,Y,ids
 
 X_train, y_train, ids_train = read(sys.argv[1])

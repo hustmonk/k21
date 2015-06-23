@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -11,25 +11,53 @@ import sys
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 kmax = {}
+filter_dict = {}
 def fit(courses, X):
+    ksum = {}
+    kcount = {}
+    kcount["ZZ"] = [0] * 1000
+
+    ksum["ZZ"] = [0] * 1000
     for j in range(len(X)):
         x = X[j]
         course = courses[j]
-        if course not in kmax:
-            kmax[course] = [0] * 1000
+        if course not in ksum:
+            kcount[course] = [0] * 1000
+            ksum[course] = [0] * 1000
         for i in range(len(x)):
-            if x[i] > kmax[course][i]:
-                kmax[course][i] = x[i]
+            ksum[course][i] = ksum[course][i] + x[i]
+            kcount[course][i] = kcount[course][i] + 1
+            ksum["ZZ"][i] = ksum["ZZ"][i] + x[i]
+            kcount["ZZ"][i] = kcount["ZZ"][i] + 1
+    for (course, sumx) in ksum.items():
+        countx = kcount[course]
+        kmax[course] = [0] * 1000
+        for i in range(1000):
+            if sumx[i] == 0:
+                kmax[course][i] = 0
+            else:
+                kmax[course][i] = sumx[i] / countx[i]
+    for i in range(1000):
+        isTrans = False
+        for (course, maxx) in kmax.items():
+            if maxx[i] > kmax["ZZ"][i] * 1.1 or maxx[i] < kmax["ZZ"][i] * 0.9:
+                isTrans = True
+                break
+        if isTrans == False:
+            filter_dict[i] = 1
+    print len(filter_dict)
 
 def transfer(course, x):
     x1 = []
     for i in range(len(x)):
-        if kmax[course][i] == 0:
-            x1.append(0.0)
-            x1.append(0.0)
-        else:
-            x1.append(x[i]/kmax[course][i])
-            x1.append(x[i])
+        if kmax["ZZ"][i] < 0.001:
+            continue
+        if i not in filter_dict:
+            if kmax[course][i] == 0 or x[i] < 0.001:
+                x1.append(0.0)
+            else:
+                x1.append((x[i] * kmax["ZZ"][i]/kmax[course][i]))
+        x1.append(x[i])
     return x1
 def read(filename, isFit):
     X = []

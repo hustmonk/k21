@@ -1,5 +1,5 @@
 set -e
-command="1"
+command="2"
 
 function valid() {
     echo "valid"
@@ -8,8 +8,8 @@ function valid() {
 function sub() {
     echo "sub"
     python learn.py train.txt.transfer test.txt.transfer sub.csv 0
-    python learn01.py train.txt.transfer test.txt.transfer sub.csv 0
-    python sub01.py
+    #python learn01.py train.txt.transfer test.txt.transfer sub.csv 0
+    #python sub01.py
 }
 
 if [ $command == "1" ];then

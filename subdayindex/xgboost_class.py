@@ -51,10 +51,9 @@ class Model():
             param = {'max_depth':100, "min_child_weight":6, "subsample":0.9, 'eta':0.05, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed, 'nthread':4,'eval_metric':'auc'}
         else:
             #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6
-            #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6 0.898634 0.898749 0.898597
             param = {'max_depth':10, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01,
                     'eta':0.03+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',
-                    "lambda":6+self.getrand()*0.1,"gamma":12+self.getrand()*0.2,
+                    "lambda":6+self.getrand()*0.1,"gamma":10+self.getrand()*0.2,
                     "colsample_bytree":0.6+self.getrand()*0.01,"seed":seed,
                     'nthread':4,'eval_metric':'auc'}
         plst = param.items()
@@ -65,7 +64,7 @@ class Model():
         bst.save_model('0001.model')
         bst.dump_model('dump.raw.txt')
         preds = bst.predict( dtest )
-        #evals_result  = bst.get_fscore()`
+        #evals_result  = bst.get_fscore()
         """
         fout = open("evals/evals_result", "w")
         for (k,v) in evals_result.items():

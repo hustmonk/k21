@@ -61,9 +61,10 @@ class Model():
         param[key] = default
 
     def _train(self, dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,seed):
-        param = {'max_depth':10, "min_child_weight":6, "subsample":0.8, 'eta':0.03,
+        #cole:0.5|mint:3|sube:0.9|etaa:0.03|gama:10|lama:5 0.898432 0.898481 0.898332
+        param = {'max_depth':10, "min_child_weight":3, "subsample":0.9, 'eta':0.03,
                 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":10,
-                "colsample_bytree":0.6,"seed":seed}
+                "colsample_bytree":0.5,"seed":seed}
         param['nthread'] = 4
         plsts = []
         #cole:0.4|mint:6|sube:0.9|etaa:0.03|gama:15|lama:5
@@ -73,7 +74,7 @@ class Model():
         self.add("lambda", [2,6,8],5, param, plsts)
         self.add("gamma", [5, 10,15,20], 15, param, plsts)
         """
-        self.add("colsample_bytree", [0.3,0.4,0.5,0.6], 0.5, param, plsts)
+        self.add("colsample_bytree", [0.5,0.4,0.3,0.6], 0.5, param, plsts)
         for plst in plsts:
             plst += [('eval_metric', 'auc')] # Multiple evals can be handled in this way
             print plst

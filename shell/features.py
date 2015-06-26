@@ -22,6 +22,7 @@ from lastdayfeature import *
 from day_level_feafure import *
 from alldayfeature import *
 from lastday import *
+from cdayindex import *
 from wholesitefeature import *
 from lastday5recordfeature import *
 from moreinfo import *
@@ -54,6 +55,7 @@ moreinfo = MoreDayFeature()
 moreinfo.load()
 statistic = StatisticInfo()
 statistic.load()
+cdayindex = Cdayindex()
 import math
 def transfer(v):
     return math.log(v+1)
@@ -229,7 +231,8 @@ def get_features(id,IS_DEBUG=False):
     if IS_DEBUG:
         print start
     f = ",".join(["%.2f" % k for k in f])
-    fs = "%s,%s,%s,%d,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_statistic_start_idx, f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic)
+    f_cdayindex = "0"#cdayindex.get_features(len(days), f_statistic_start_idx)
+    fs = "%s,%s,%s,%d,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_statistic_start_idx, f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic, f_cdayindex)
     #fs = "%s,%s,%s,%d,%s\n" % (y, id, course_id, len(days), f_last_day )
     return fs
 def filed():

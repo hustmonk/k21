@@ -1,5 +1,5 @@
 set -e
-command="3"
+command="1"
 
 function valid() {
     echo "valid"

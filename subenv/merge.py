@@ -4,6 +4,7 @@
 
 """docstring
 """
+import math
 
 __revision__ = '0.1'
 fins = []
@@ -14,8 +15,15 @@ for i in range(N):
 fout = open("merge.csv","w")
 while fins[0]:
     ps = []
+    k = 1
     for i in range(N):
-        line = fins[i].next()
+        line = fins[i].readline()
+        if len(line) == 0:
+            break
         id,pred = line.strip().split(",")
         ps.append(float(pred))
-    fout.write("%s,%f\n" % (id, sum(ps)/N))
+        k = k * float(pred)
+    if len(line) == 0:
+        break
+    #fout.write("%s,%f\n" % (id, sum(ps)/N))
+    fout.write("%s,%f\n" % (id, math.pow(k, 1.0/N)))

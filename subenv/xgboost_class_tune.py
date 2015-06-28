@@ -62,8 +62,8 @@ class Model():
 
     def _train(self, dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,seed):
         param = {'max_depth':10, "min_child_weight":6, "subsample":0.8, 'eta':0.03,
-                'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":10,
-                "colsample_bytree":0.6,"seed":seed}
+                'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":12,
+                "colsample_bytree":0.5,"seed":seed}
         param['nthread'] = 4
         plsts = []
         #cole:0.4|mint:6|sube:0.9|etaa:0.03|gama:15|lama:5

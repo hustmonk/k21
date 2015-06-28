@@ -19,6 +19,7 @@ logger = logging.getLogger("example")
 import random
 class Model():
     def read(self):
+        self.random = False
         dtrain = xgb.DMatrix("train.buffer")
         dtest = xgb.DMatrix("test.buffer")
         evallist  = [(dtest,'eval'), (dtrain,'train')]
@@ -33,10 +34,10 @@ class Model():
         if is_valid:
             dtest.save_binary("test.buffer")
         if is_valid:
-            exit(-1)
             evallist  = [(dtest,'eval'), (dtrain,'train')]
         else:
             evallist  = [(dtrain,'train')]
+            self.random = True
         num_round = 450
         if is_valid:
             self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,2)
@@ -44,26 +45,25 @@ class Model():
             for i in range(10):
                 self._train(dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,i)
     def getrand(self):
-        return random.randint(0,20) - 10
+        if self.random:
+            return random.randint(0,20) - 10
+        else:
+            return 0
     def _train(self, dtrain,dtest,evallist,num_round,outfile,is_valid,ids_test,y_test,seed):
         #cole:0.4|mint:6|sube:0.9|etaa:0.05|gama:15|lama:5 0.897681 0.897757
-        if  is_valid:
-            param = {'max_depth':100, "min_child_weight":6, "subsample":0.9, 'eta':0.05, 'silent':1, 'objective':'binary:logistic',"lambda":5,"gamma":15,"colsample_bytree":0.4,"seed":seed, 'nthread':4,'eval_metric':'auc'}
-        else:
-            #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6
-            #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6 0.898634 0.898749 0.898597
-            param = {'max_depth':10, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01,
-                    'eta':0.03+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',
-                    "lambda":6+self.getrand()*0.1,"gamma":12+self.getrand()*0.2,
-                    "colsample_bytree":0.6+self.getrand()*0.01,"seed":seed,
+        #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6
+        #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6 0.898634 0.898749 0.898597
+        #cole:0.4|mint:6|sube:0.9|etaa:0.03|gama:15|lama:2 0.899914 0.899939
+        param = {'max_depth':100, "min_child_weight":6, "subsample":0.89+self.getrand()*0.005,
+                    'eta':0.03+self.getrand()*0.001, 'silent':1, 'objective':'binary:logistic',
+                    "lambda":6+self.getrand()*0.1,"gamma":14+self.getrand()*0.2,
+                    "colsample_bytree":0.4+self.getrand()*0.01,"seed":seed,
                     'nthread':4,'eval_metric':'auc'}
         plst = param.items()
         print plst
         sys.stdout.flush()
         evals_result={}
         bst = xgb.train( plst, dtrain, num_round, evallist, evals_result=evals_result)
-        bst.save_model('0001.model')
-        bst.dump_model('dump.raw.txt')
         preds = bst.predict( dtest )
         #evals_result  = bst.get_fscore()`
         """

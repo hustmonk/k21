@@ -18,10 +18,12 @@ def read(filename,day):
         arr = line.strip().replace("inf","1").split(",")
         y = int(arr[0])
         if day == 1:
-            if arr[3] != "1":
+            #if arr[3] != "1":
+            if int(arr[4]) >= 15:
                 continue
         else:
-            if arr[3] == "1":
+            #if arr[3] == "1":
+            if int(arr[4]) < 15:
                 continue
         ids.append(arr[1])
 

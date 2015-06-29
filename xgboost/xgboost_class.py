@@ -35,6 +35,7 @@ class Model():
             dtest.save_binary("test.buffer")
         if is_valid:
             evallist  = [(dtest,'eval'), (dtrain,'train')]
+            self.random = False
         else:
             evallist  = [(dtrain,'train')]
             self.random = True
@@ -56,7 +57,7 @@ class Model():
         #cole:0.4|mint:6|sube:0.9|etaa:0.03|gama:15|lama:2 0.899914 0.899939
         param = {'max_depth':100, "min_child_weight":6, "subsample":0.89+self.getrand()*0.005,
                     'eta':0.03+self.getrand()*0.001, 'silent':1, 'objective':'binary:logistic',
-                    "lambda":6+self.getrand()*0.1,"gamma":14+self.getrand()*0.2,
+                    "lambda":4+self.getrand()*0.1,"gamma":14+self.getrand()*0.2,
                     "colsample_bytree":0.4+self.getrand()*0.01,"seed":seed,
                     'nthread':4,'eval_metric':'auc'}
         plst = param.items()

@@ -26,6 +26,16 @@ for line in open("train2/log_train.csv"):
     if id == sys.argv[1]:
         print line.strip()
 
+for line in open("../data/date.csv"):
+    #course_id,from,to
+    arr = line.strip().split(",")
+    if arr[0] == cid:
+        print line
+for line in open("../shell/conf/user.info"):
+    arr = line.strip().split("\t")
+    if arr[0] == uid:
+        print sorted(arr[2].split(","))
+
 print cid
 debug = []
 for line in open("object.csv"):

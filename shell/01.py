@@ -14,18 +14,18 @@ from common import *
 ps = []
 ys = []
 psd = {}
-"""
 for line in open("valid.txt.1.debug"):
     id,p,y = line.split(",")
     ys.append(int(y))
     ps.append(float(p))
-    psd[id] = float(p) * 1.04
-    #psd[id] = float(p)
+    #psd[id] = float(p) * 1.04
+    psd[id] = float(p)
 for line in open("valid.txt.2.debug"):
     id,p,y = line.split(",")
     ys.append(int(y))
     ps.append(float(p))
     psd[id] = float(p)
+"""
 for line in open("../tovw/train2.txt.pred"):
     p, id = line.strip().split(" ")
     p = (float(p) + 1 )/2.0
@@ -43,7 +43,6 @@ for line in open("../xgboost/my_neural_net_submission.csv"):
     id,p,p1 = line.split(",")
     #psd[id] = psd[id] * float(p1)
     psd[id] = float(p1)
-"""
 
 for line in open("../nn/my_neural_net_submission.csv"):
     id,p,p1 = line.split(",")
@@ -53,6 +52,7 @@ for line in open("../nn/my_neural_net_submission.csv"):
 for line in open("../reducelr/valid.txt.debug"):
     id,p,y = line.split(",")
     psd[id] = float(p) * psd[id]
+"""
 ps = []
 ys = []
 for line in open("valid.txt.debug"):

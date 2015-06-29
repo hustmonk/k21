@@ -9,6 +9,6 @@ set -e
 #python lastday.py
 python lastdayfeature.py
 python alldayfeature.py
-python day_level_feafure.py
-python wholesitefeature.py
-sh run.sh
+#python day_level_feafure.py
+#python wholesitefeature.py
+#sh run.sh

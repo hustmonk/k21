@@ -20,9 +20,11 @@ import math
 from module import *
 from transfer import *
 from objweight import *
+from cdate import *
 
 class CommonFeature():
     def __init__(self):
+        self.cdate = Cdate()
         self.coursetimeinfo = CourseTimeInfo()
         self.obj = Obj()
         self.objweight = ObjWeight()
@@ -49,6 +51,7 @@ class CommonFeature():
         cidx_by_stat_count = [0] * CIDX_VEC_NUM
         month_count = [0] * MONTH_VEC_NUM
         next_public = [0] * CIDX_VEC_NUM
+        dx_by_date_count = [0] * 30
         spend_time_count = [0] * 10
         sqrt_spend_time_count = [0] * 10
         browser = 0
@@ -109,6 +112,9 @@ class CommonFeature():
 
             cidx_by_stat = self.coursetimeinfo.get_index(course_id, week.times(info[0]))
             cidx_by_stat_count[cidx_by_stat] = cidx_by_stat_count[cidx_by_stat] + 1
+
+            dx_by_date = self.cdate.get_index(course_id, day)
+            dx_by_date_count[dx_by_date] = dx_by_date_count[dx_by_date] + 1
         if _p > 1:
             next_public_diff = self.obj.get_index(course_id, _p)
         else:
@@ -138,8 +144,8 @@ class CommonFeature():
         #event_isclick_count[k] = 1
         #print k
         
-        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count, objw, event_isclick_count, uday_event_count]
-        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count", "objw", "event_isclick_count", "uday_event_count"]
+        fv = [event_count,weekday_count,hour_count,cidx_count,cidx_by_stat_count, month_count, spend_time_count, sqrt_spend_time_count, fp, next_public, event_sqrt_timesum, event_timesum, u_event_count, objw, event_isclick_count, uday_event_count, dx_by_date_count]
+        fv_debug = ["event_count","weekday_count","hour_count","cidx_count","cidx_by_stat_count", "month_count", "spend_time_count", "sqrt_spend_time_count", "fp", "next_public", "event_sqrt_timesum", "event_timesum", "u_event_count", "objw", "event_isclick_count", "uday_event_count", "dx_by_date_count"]
         for j in range(len(fv)):
             vs = fv[j]
             if isDebug:

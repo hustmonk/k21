@@ -135,8 +135,8 @@ class StatisticInfo:
         self.ratio_day_by_course_id = statistic["ratio_day_by_course_id"]
         self.first_day_by_course_id = statistic["first_day_by_course_id"]
 
-    def get_features(self, day, course_id, days,alldays):
-        f = [0] * 169
+    def get_features(self, day, course_id, days, alldays, y):
+        f = [0] * 238
         f[0] = self.ratio_course_id[course_id]
         f[1] = self.ratio_course_id_first[course_id]
         for i in range(21):
@@ -152,73 +152,64 @@ class StatisticInfo:
             f[start + idx] = 1
         else:
             return ",".join(["%.3f" % k for k in f])
-        start = 53
+        start = start + 30
         for d in days:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 0 and idx < 30:
                 f[start + idx] = 1
             if idx < 0:
                 f[start + 30] = f[start + 30] + 1
-        start = 84
+        start = start + 31
         for d in days:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 0 and idx < 30:
                 idx = idx / 3
                 f[start + idx] = 1 + f[start + idx]
-        start = 94
+        start = start + 10
+        XX = 0
         for d in alldays:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
-            if idx < -15:
-                f[start + 30] = f[start + 30] + 1
-            elif idx < -10:
-                f[start + 31] = f[start + 31] + 1
-            elif idx < -7:
-                f[start + 32] = f[start + 32] + 1
-            elif idx < -3:
-                f[start + 33] = f[start + 33] + 1
-            elif idx < 0:
-                f[start + 34] = f[start + 34] + 1
-            elif idx < 30:
+            if week.diff(d, day) > 0 and idx < 30:
+                XX = XX + 1
+            if idx >= -18 and idx < 60:
+                idx = idx + 18
                 f[start + idx] = 1
-            elif idx < 33:
-                f[start + 35] = f[start + 35] + 1
-            elif idx < 36:
-                f[start + 36] = f[start + 36] + 1
-            elif idx < 40:
-                f[start + 37] = f[start + 37] + 1
-            elif idx < 45:
-                f[start + 38] = f[start + 38] + 1
-            else:
-                f[start + 39] = f[start + 39] + 1
-        start = 134
+                f[start + 78 + idx/3] = f[start + 78 + idx/3] + 1
+                f[start + 104 + idx/6] = f[start + 104 + idx/6] + 1
+                #117
+            elif idx < -18:
+                f[start + 118] = f[start + 118] + 1
+            elif idx > 60:
+                f[start + 119] = f[start + 119] + 1
+        f[start+120] = XX
+        """
+        print y,f[start+18:start+78],"YY"
+        print y,f[start+30:start+40],"YY"
+        if XX:
+            print y,"ZZ"
+        """
+        start = start + 121
 
         idx = week.diff(day, self.first_day_by_course_id[course_id])
         if idx >= 0 and idx < 30:
             idx = idx / 3
             f[start + idx] = 1
-        start = 144
-        for d in alldays:
-            idx = week.diff(d, self.first_day_by_course_id[course_id])
-            if idx >= 0 and idx < 30:
-                idx = idx / 3
-                f[start + idx] = f[start + idx] + 1
-        start = 154
+        start = start + 10
         for d in days:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 0 and idx < 30:
                 idx = idx / 6
                 f[start + idx] = 1 + f[start + idx]
-        start = 159
-        for d in alldays:
-            idx = week.diff(d, self.first_day_by_course_id[course_id])
-            if idx >= 0 and idx < 30:
-                idx = idx / 6
-                f[start + idx] = 1 + f[start + idx]
-        start = 164
+        start = start + 5
 
         idx = week.diff(day, self.first_day_by_course_id[course_id])
         if idx >= 0 and idx < 30:
             idx = idx / 6
+            f[start + idx] = 1
+        start = start + 5
+        idx = week.diff(day, self.first_day_by_course_id[course_id])
+        if idx >= 0 and idx < 30:
+            idx = idx / 10
             f[start + idx] = 1
         """
         start = 83

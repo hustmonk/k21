@@ -175,11 +175,18 @@ def get_features(id,IS_DEBUG=False):
         transfer_vec = transfer_day.get_features(days[-1])
     else:
         transfer_vec = transfer_day.get_features("")
+    enr_ids = enrollment.user_enrollment_id.get(username, [])
+    enrollment_num = len(enr_ids)
+    non_unique_days = []
+    for _id in enr_ids:
+        _days = lastdayinfo.get_days(_id)
+        non_unique_days = non_unique_days + _days
+
     f_last_day = lastdayfeature.get_features(id)
     f_day_level = daylevel.get_features(id)
     f_common = alldayfeature.get_features(id)
     f_user_site = wholesitefeature.get_features(username)
-    f_statistic = statistic.get_features(lastday, course_id, days, alldays, y)
+    f_statistic = statistic.get_features(lastday, course_id, days, alldays, non_unique_days, y)
     f_statistic_start_idx = statistic.get_start_idx(lastday, course_id)
     f_days = [0] * DAYS_VEC_NUM
     f_all_days = [0] * DAYS_VEC_NUM
@@ -187,7 +194,6 @@ def get_features(id,IS_DEBUG=False):
     f_all_days_half = [0] * (DAYS_VEC_NUM/2)
     f_enrollment_num_vec = [0] * MAX_ENROLLMENT_VEC_NUM
     f_last_5_record = "0"#lastday5recordfeature.get_features(id)
-    enrollment_num = len(enrollment.user_info.get(username, []))
     if enrollment_num > MAX_ENROLLMENT_VEC_NUM - 1:
         enrollment_num = MAX_ENROLLMENT_VEC_NUM - 1
     f_enrollment_num_vec[enrollment_num] = 1

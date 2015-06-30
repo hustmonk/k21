@@ -12,18 +12,19 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 kmax = {}
 filter_dict = {}
+N = 1200
 def fit(courses, X):
     ksum = {}
     kcount = {}
-    kcount["ZZ"] = [0] * 1000
+    kcount["ZZ"] = [0] * N
 
-    ksum["ZZ"] = [0] * 1000
+    ksum["ZZ"] = [0] * N
     for j in range(len(X)):
         x = X[j]
         course = courses[j]
         if course not in ksum:
-            kcount[course] = [0] * 1000
-            ksum[course] = [0] * 1000
+            kcount[course] = [0] * N
+            ksum[course] = [0] * N
         for i in range(len(x)):
             ksum[course][i] = ksum[course][i] + x[i]
             kcount[course][i] = kcount[course][i] + 1
@@ -31,13 +32,13 @@ def fit(courses, X):
             kcount["ZZ"][i] = kcount["ZZ"][i] + 1
     for (course, sumx) in ksum.items():
         countx = kcount[course]
-        kmax[course] = [0] * 1000
-        for i in range(1000):
+        kmax[course] = [0] * N
+        for i in range(N):
             if sumx[i] == 0:
                 kmax[course][i] = 0
             else:
                 kmax[course][i] = sumx[i] / countx[i]
-    for i in range(1000):
+    for i in range(N):
         isTrans = False
         for (course, maxx) in kmax.items():
             if maxx[i] > kmax["ZZ"][i] * 1.1 or maxx[i] < kmax["ZZ"][i] * 0.9:

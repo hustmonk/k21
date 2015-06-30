@@ -11,4 +11,4 @@ python lastdayfeature.py
 python alldayfeature.py
 #python day_level_feafure.py
 #python wholesitefeature.py
-#sh run.sh
+sh run.sh

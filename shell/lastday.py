@@ -34,6 +34,7 @@ class LastDayInfo:
             infos = log.enrollment_loginfo.get(id, [])
             buf = []
             _day = ""
+            _lastTime = ""
             for info in infos:
                 ##time,source,event,o
                 day = info[0].split("T")[0]
@@ -42,9 +43,12 @@ class LastDayInfo:
                     buf = []
                 buf.append(",".join(info))
                 _day = day
+                _lastTime = info[0]
             last_infos[id] = buf
             days = sorted(days)
-            id_days_infos[id] = days
+            if len(days) > 0:
+                print days[-1],_lastTime
+            id_days_infos[id] = [days,_lastTime]
         modelFileSave = open('_feature/last.day.log', 'wb')
         pickle.dump(last_infos, modelFileSave)
         modelFileSave.close()
@@ -67,7 +71,13 @@ class LastDayInfo:
         return [k.split(",") for k in self.last_infos[id]]
 
     def get_days(self, id):
-        return self.id_days_infos[id]
+        return self.id_days_infos[id][0]
+
+    def get_lasthour(self, id):
+        hour = self.id_days_infos[id][1]
+        if len(hour) < 3:
+            return 0
+        return int(hour[11:13])/12
 
 if __name__ == "__main__":
     userinfo = LastDayInfo()

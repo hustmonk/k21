@@ -135,8 +135,9 @@ class StatisticInfo:
         self.ratio_day_by_course_id = statistic["ratio_day_by_course_id"]
         self.first_day_by_course_id = statistic["first_day_by_course_id"]
 
-    def get_features(self, day, course_id, days, alldays, non_unique_days, y):
+    def get_features(self, day, course_id, days, alldays, non_unique_days, hour, y):
         f = [0] * 390
+        other_f = [0] * 30
         f[0] = self.ratio_course_id[course_id]
         f[1] = self.ratio_course_id_first[course_id]
         for i in range(21):
@@ -151,13 +152,14 @@ class StatisticInfo:
             idx = week.diff(day, self.first_day_by_course_id[course_id])
             f[start + idx] = 1
         else:
-            return ",".join(["%.3f" % k for k in f])
+            return ",".join(["%.2f" % k for k in f]) + "," + (",".join(["%.2f" % k for k in other_f]))
         start = start + 30
         for d in days:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 0 and idx < 30:
                 f[start + idx] = 1
             if idx < 0:
+                print d,self.first_day_by_course_id[course_id]
                 f[start + 30] = f[start + 30] + 1
 
         start = start + 31
@@ -175,6 +177,7 @@ class StatisticInfo:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if week.diff(d, day) > 0 and idx < 30:
                 XX = XX + 1
+                other_f[idx] = other_f[idx] + 1
             if idx >= -18 and idx < 60:
                 idx = idx + 18
                 f[start + idx] = 1 + f[start + idx]
@@ -183,7 +186,7 @@ class StatisticInfo:
                 #117
             elif idx < -18:
                 f[start + 118] = f[start + 118] + 1
-            elif idx > 60:
+            elif idx >= 60:
                 f[start + 119] = f[start + 119] + 1
         f[start+120] = XX
         start = start + 121
@@ -200,7 +203,7 @@ class StatisticInfo:
                 #117
             elif idx < -18:
                 f[start + 118] = f[start + 118] + 1
-            elif idx > 60:
+            elif idx >= 60:
                 f[start + 119] = f[start + 119] + 1
         f[start+120] = XX
         """
@@ -243,7 +246,7 @@ class StatisticInfo:
                 nd = week.getnd(day, k)
                 f[start+i] = self.ratio_day_by_course_id[course_id].get(nd, default)
         """
-        return ",".join(["%.3f" % k for k in f])
+        return ",".join(["%.2f" % k for k in f]) + "," + (",".join(["%.2f" % k for k in other_f]))
     def get_start_idx(self, day, course_id):
         if len(day) < 4:
             return 0

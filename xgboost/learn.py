@@ -22,6 +22,8 @@ def read(filename):
         ids.append(arr[1])
 
         x = [ float(k) for k in arr[3:]]
+        if len(x) == 1301:
+            continue
         X.append(x)
         Y.append(y)
         """

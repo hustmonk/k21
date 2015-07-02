@@ -22,6 +22,10 @@ def read(filename):
         x = [ math.sqrt(math.fabs(float(k))) for k in arr[3:]]
         X.append(x)
         Y.append(y)
+        """
+        if len(X) > 10000:
+            break
+        """
     return X,Y,ids
 
 X_train, y_train, ids_train = read(sys.argv[1])

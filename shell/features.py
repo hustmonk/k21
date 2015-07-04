@@ -9,8 +9,10 @@ __revision__ = '0.1'
 
 import sys
 from log import *
+from dayindex import *
 from enrollment import *
 from Object import *
+from lastweekfeature import *
 from label import *
 from weekend import *
 from coursetime import *
@@ -27,6 +29,7 @@ from wholesitefeature import *
 from lastday5recordfeature import *
 from moreinfo import *
 from statistic import *
+calldayindex = CAlldayIndex()
 week = Week()
 lastdayfeature = LastDayFeature()
 lastdayfeature.load()
@@ -56,6 +59,8 @@ moreinfo.load()
 statistic = StatisticInfo()
 statistic.load()
 cdayindex = Cdayindex()
+lastweekfeature = LastWeekFeature()
+lastweekfeature.load()
 import math
 def transfer(v):
     return math.log(v+1)
@@ -185,10 +190,12 @@ def get_features(id,IS_DEBUG=False):
     f_last_day = lastdayfeature.get_features(id)
     f_day_level = daylevel.get_features(id)
     f_common = alldayfeature.get_features(id)
+    f_lastweekfeature = "0"#lastweekfeature.get_features(id)
     f_user_site = wholesitefeature.get_features(username)
     _lasthour = lastdayinfo.get_lasthour(id)
     f_statistic = statistic.get_features(lastday, course_id, days, alldays, non_unique_days, _lasthour, y)
     f_statistic_start_idx = statistic.get_start_idx(lastday, course_id)
+    f_dayindex = calldayindex.get_features(alldays)
     f_days = [0] * DAYS_VEC_NUM
     f_all_days = [0] * DAYS_VEC_NUM
     f_days_half = [0] * (DAYS_VEC_NUM/2)
@@ -247,7 +254,7 @@ def get_features(id,IS_DEBUG=False):
         print start
     f = ",".join(["%.2f" % k for k in f])
     f_cdayindex = "0"#cdayindex.get_features(len(days), f_statistic_start_idx)
-    fs = "%s,%s,%s,%d,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_statistic_start_idx, f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic, f_cdayindex)
+    fs = "%s,%s,%s,%d,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_statistic_start_idx, f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic, f_cdayindex,f_dayindex)
     #fs = "%s,%s,%s,%d,%s\n" % (y, id, course_id, len(days), f_last_day )
     return fs
 def filed():

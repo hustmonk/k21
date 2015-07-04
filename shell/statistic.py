@@ -245,6 +245,8 @@ class StatisticInfo:
                 k = i - 2
                 nd = week.getnd(day, k)
                 f[start+i] = self.ratio_day_by_course_id[course_id].get(nd, default)
+        for i in range(1,30):
+            other_f[i+30] = other_f[i+30-1] + other_f[i]
         """
         return ",".join(["%.2f" % k for k in f]) + "," + (",".join(["%.2f" % k for k in other_f]))
     def get_start_idx(self, day, course_id):

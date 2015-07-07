@@ -24,12 +24,28 @@ class Correction:
     def get_features(self, id):
         username, course_id = self.enrollment.enrollment_info.get(id)
         enr_ids = self.enrollment_train.user_enrollment_id.get(username, [])
+        whole_enr_ids = self.enrollment.user_enrollment_id.get(username, [])
         dropdays = []
         nodropdays = []
         dropnum = 0
         nodropnum = 0
         weekend = Week()
         _end = self.cdate.get_end(course_id)
+        print _end
+        lostdays = []
+        for _id in whole_enr_ids:
+            if _id == id:
+                continue
+            _username, _course_id = self.enrollment.enrollment_info.get(_id)
+            days = self.lastdayinfo.get_days(_id)
+            end = self.cdate.get_end(_course_id)
+            if len(days) < 1:
+                continue
+            lastday = days[-1]
+            diff = weekend.diff(end, lastday)
+            for i in range(1, diff):
+                lostdays.append(weekend.getnd(lastday, i))
+            print lastday,days,end,lostdays
         for _id in enr_ids:
             if _id == id:
                 continue
@@ -49,16 +65,18 @@ class Correction:
                     nodropdays.append(nday)
         k1 = self.k_get_features(_end, dropdays)
         k2 = self.k_get_features(_end, nodropdays)
-        return k1 + "," + k2 + "," + str(dropnum) + "," + str(nodropnum)
+        k3 = "0" #self.k_get_features(_end, lostdays)
+        return k1 + "," + k2 + "," + k3 + "," + str(dropnum) + "," + str(nodropnum)
         
     def k_get_features(self,end,daylist):
-        k = [0] * 30
+        k = [0] * 40
         weekend = Week()
         for day in daylist:
             idx = weekend.diff(end, day)
             if idx >= -15 and idx < 15:
                 idx = idx + 15
                 k[idx] = 1 + k[idx]
+                k[idx/3+30] = 1 + k[idx/3+30]
         return ",".join(["%d" % i for i in k])
 
 if __name__ == "__main__":

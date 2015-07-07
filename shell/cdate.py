@@ -24,6 +24,10 @@ class Cdate:
             print "X"
             return 0
         return diff
+    def get_start(self, course_id):
+        return self.info[course_id][0]
+    def get_end(self, course_id):
+        return self.info[course_id][1]
 
 if __name__ == "__main__":
     cdate = Cdate()

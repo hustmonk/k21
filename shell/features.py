@@ -29,6 +29,7 @@ from wholesitefeature import *
 from lastday5recordfeature import *
 from moreinfo import *
 from statistic import *
+from correction import *
 calldayindex = CAlldayIndex()
 week = Week()
 lastdayfeature = LastDayFeature()
@@ -44,6 +45,7 @@ lastday5recordfeature.load()
 coursetimeinfo = CourseTimeInfo()
 enrollment_filename = sys.argv[2]
 featrue_filename = sys.argv[3]
+cor = Correction(enrollment_filename)
 enrollment_train = Enrollment(enrollment_filename)
 enrollment = Enrollment("../data/merge/enrollment.csv")
 label = Label()
@@ -193,6 +195,7 @@ def get_features(id,IS_DEBUG=False):
     f_lastweekfeature = "0"#lastweekfeature.get_features(id)
     f_user_site = wholesitefeature.get_features(username)
     _lasthour = lastdayinfo.get_lasthour(id)
+    f_cor = cor.get_features(id)
     f_statistic = statistic.get_features(lastday, course_id, days, alldays, non_unique_days, _lasthour, y)
     f_statistic_start_idx = statistic.get_start_idx(lastday, course_id)
     f_dayindex = calldayindex.get_features(alldays)
@@ -254,7 +257,7 @@ def get_features(id,IS_DEBUG=False):
         print start
     f = ",".join(["%.2f" % k for k in f])
     f_cdayindex = "0"#cdayindex.get_features(len(days), f_statistic_start_idx)
-    fs = "%s,%s,%s,%d,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_statistic_start_idx, f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic, f_cdayindex,f_dayindex)
+    fs = "%s,%s,%s,%d,%d,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s,+%s\n" % (y, id, course_id, len(days),f_statistic_start_idx, f_common, f_last_day, f_day_level, f_last_5_record, f_user_site, f,f_statistic, f_cdayindex,f_dayindex,f_cor)
     #fs = "%s,%s,%s,%d,%s\n" % (y, id, course_id, len(days), f_last_day )
     return fs
 def filed():

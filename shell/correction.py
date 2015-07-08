@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -12,12 +12,13 @@ from cdate import *
 from lastday import *
 from weekend import *
 class Correction:
-    def __init__(self, enrollmentfile):
+    def __init__(self, enrollmentfile,debug = False):
         self.enrollment = Enrollment("../data/merge/enrollment.csv")
         self.enrollment_train = Enrollment("../data/train/enrollment_train.csv")
 
         self.label = Label()
         self.cdate = Cdate()
+        self.debug = debug
         self.lastdayinfo = LastDayInfo()
         self.lastdayinfo.load_id_days()
 
@@ -31,7 +32,8 @@ class Correction:
         nodropnum = 0
         weekend = Week()
         _end = self.cdate.get_end(course_id)
-        print _end
+        if self.debug:
+            print id,_end,course_id
         lostdays = []
         for _id in whole_enr_ids:
             if _id == id:
@@ -45,7 +47,8 @@ class Correction:
             diff = weekend.diff(end, lastday)
             for i in range(1, diff+1):
                 lostdays.append(weekend.getnd(lastday, i))
-            print lastday,days,end,lostdays
+            if self.debug:
+                print lastday,days,end,lostdays
         for _id in enr_ids:
             if _id == id:
                 continue
@@ -66,8 +69,15 @@ class Correction:
         k1 = self.k_get_features(_end, dropdays)
         k2 = self.k_get_features(_end, nodropdays)
         k3 = self.k_get_features(_end, lostdays)
-        return k1 + "," + k2 + "," + k3 + "," + str(dropnum) + "," + str(nodropnum)
-        
+        if self.debug:
+            print k3,"k3"
+        f = [dropnum, nodropnum, nodropnum/(dropnum+nodropnum+1.0), dropnum/(dropnum+nodropnum+1.0)]
+        f = ["%s" % k for k in f]
+        f.append(k1)
+        f.append(k2)
+        f.append(k3)
+        return ",".join(f)
+
     def k_get_features(self,end,daylist):
         N = 21
         k = [0] * (2*N + 2*N/3)
@@ -81,5 +91,7 @@ class Correction:
         return ",".join(["%d" % i for i in k])
 
 if __name__ == "__main__":
-    cor = Correction("../data/train/enrollment_train.csv")
+    cor = Correction("../data/train/enrollment_train.csv",True)
     print cor.get_features("15660")
+    for i in range(1, 100):
+        print cor.get_features(str(i))

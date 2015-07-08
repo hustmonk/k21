@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -12,6 +12,7 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 kmax = {}
 filter_trans = {}
+N = 1800
 def fit(courses, X):
     fnum = len(X[0])
     for i in range(fnum):
@@ -20,7 +21,7 @@ def fit(courses, X):
             course = courses[j]
             if x[i] > 0.001:
                 if course not in kmax:
-                    kmax[course] = [0] * 1000
+                    kmax[course] = [0] * N
                 if kmax[course][i] < x[i]:
                     kmax[course][i] = x[i]
 

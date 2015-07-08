@@ -7,7 +7,7 @@
 
 __revision__ = '0.1'
 fins = []
-N = 5
+N = 6
 for i in range(N):
     fin = open("merge/sub.csv"+str(i))
     fins.append(fin)

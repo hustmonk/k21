@@ -43,7 +43,7 @@ class Correction:
                 continue
             lastday = days[-1]
             diff = weekend.diff(end, lastday)
-            for i in range(1, diff):
+            for i in range(1, diff+1):
                 lostdays.append(weekend.getnd(lastday, i))
             print lastday,days,end,lostdays
         for _id in enr_ids:
@@ -65,18 +65,19 @@ class Correction:
                     nodropdays.append(nday)
         k1 = self.k_get_features(_end, dropdays)
         k2 = self.k_get_features(_end, nodropdays)
-        k3 = "0" #self.k_get_features(_end, lostdays)
+        k3 = self.k_get_features(_end, lostdays)
         return k1 + "," + k2 + "," + k3 + "," + str(dropnum) + "," + str(nodropnum)
         
     def k_get_features(self,end,daylist):
-        k = [0] * 40
+        N = 21
+        k = [0] * (2*N + 2*N/3)
         weekend = Week()
         for day in daylist:
             idx = weekend.diff(end, day)
-            if idx >= -15 and idx < 15:
-                idx = idx + 15
+            if idx >= -N and idx < N:
+                idx = idx + N
                 k[idx] = 1 + k[idx]
-                k[idx/3+30] = 1 + k[idx/3+30]
+                k[idx/3+2*N] = 1 + k[idx/3+2*N]
         return ",".join(["%d" % i for i in k])
 
 if __name__ == "__main__":

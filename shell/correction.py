@@ -79,14 +79,15 @@ class Correction:
         return ",".join(f)
 
     def k_get_features(self,end,daylist):
-        k = [0] * 40
+        N = 21
+        k = [0] * (2*N + 2*N/3)
         weekend = Week()
         for day in daylist:
             idx = weekend.diff(end, day)
-            if idx >= -15 and idx < 15:
-                idx = idx + 15
+            if idx >= -N and idx < N:
+                idx = idx + N
                 k[idx] = 1 + k[idx]
-                k[idx/3+30] = 1 + k[idx/3+30]
+                k[idx/3+2*N] = 1 + k[idx/3+2*N]
         return ",".join(["%d" % i for i in k])
 
 if __name__ == "__main__":

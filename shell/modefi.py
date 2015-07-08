@@ -31,7 +31,7 @@ for line in open("valid.txt.debug"):
     if w > 0:
         up = 1
     elif w < 0:
-        up = -5
+        up = -1
     if up != 0:
         print w,up,p,yx
     ys.append(int(y))

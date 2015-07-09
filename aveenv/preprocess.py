@@ -12,6 +12,7 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 kmax = {}
 filter_trans = {}
+N = 1800
 def fit(courses, X):
     fnum = len(X[0])
     for i in range(fnum):
@@ -26,9 +27,9 @@ def fit(courses, X):
         total = []
         for (course, info) in kinfo.items():
             if course not in kmax:
-                kmax[course] = [0] * 1000
+                kmax[course] = [0] * N
             info = sorted(info)
-            info = info[-49 * len(info)/50:]
+            info = info[49 * len(info)/50:]
             k = sum(info)/len(info)
             kmax[course][i] = k
             total.append(k)

@@ -135,8 +135,8 @@ class StatisticInfo:
         self.ratio_day_by_course_id = statistic["ratio_day_by_course_id"]
         self.first_day_by_course_id = statistic["first_day_by_course_id"]
 
-    def get_features(self, day, course_id, days, alldays, non_unique_days, hour, y):
-        f = [0] * 390
+    def get_features(self, day, course_id, days, alldays, non_unique_days, hour, y, nodropdays):
+        f = [0] * 435
         other_f = [0] * 30
         f[0] = self.ratio_course_id[course_id]
         f[1] = self.ratio_course_id_first[course_id]
@@ -198,6 +198,16 @@ class StatisticInfo:
                 f[start + 119] = f[start + 119] + 1
         f[start+120] = XX
         start = start + 121
+
+        for d in non_unique_days+nodropdays:
+            idx = week.diff(d, self.first_day_by_course_id[course_id])
+            if idx >= 18 and idx < 48:
+                idx = idx - 18
+                f[start + idx] = 1 + f[start + idx]
+                f[start + 30 + idx/3] = f[start + 30 + idx/3] + 1
+                f[start + 40 + idx/6] = f[start + 40 + idx/6] + 1
+        start = start + 45
+        #XX
         XX = 0
         for d in alldays:
             idx = week.diff(d, self.first_day_by_course_id[course_id])

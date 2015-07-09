@@ -43,6 +43,9 @@ class Correction:
             end = self.cdate.get_end(_course_id)
             if len(days) < 1:
                 continue
+            _y = self.label.get(_id)
+            if _y == "0":
+                continue
             lastday = days[-1]
             diff = weekend.diff(end, lastday)
             if diff < 8:

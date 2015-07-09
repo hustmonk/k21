@@ -199,13 +199,21 @@ class StatisticInfo:
         f[start+120] = XX
         start = start + 121
 
-        for d in non_unique_days+nodropdays:
+        for d in non_unique_days:
             idx = week.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 18 and idx < 48:
                 idx = idx - 18
                 f[start + idx] = 1 + f[start + idx]
                 f[start + 30 + idx/3] = f[start + 30 + idx/3] + 1
                 f[start + 40 + idx/6] = f[start + 40 + idx/6] + 1
+        for d in nodropdays:
+            idx = week.diff(d, self.first_day_by_course_id[course_id])
+            if idx >= 18 and idx < 48:
+                idx = idx - 18
+                weight = 1
+                f[start + idx] = weight + f[start + idx]
+                f[start + 30 + idx/3] = f[start + 30 + idx/3] + weight
+                f[start + 40 + idx/6] = f[start + 40 + idx/6] + weight
         start = start + 45
         #XX
         XX = 0

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -15,7 +15,7 @@ class Label:
             self.label_info[id] = y
 
     def get(self, id):
-        return self.label_info.get(id, 0)
+        return self.label_info.get(id, "1")
 
     def contain(self,id):
         if id not in self.label_info:
@@ -25,4 +25,4 @@ class Label:
 if __name__ == "__main__":
     label = Label()
 
-            
+

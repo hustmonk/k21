@@ -45,6 +45,8 @@ class Correction:
                 continue
             lastday = days[-1]
             diff = weekend.diff(end, lastday)
+            if diff < 8:
+                continue
             for i in range(1, diff+1):
                 lostdays.append(weekend.getnd(lastday, i))
             if self.debug:
@@ -79,15 +81,17 @@ class Correction:
         return ",".join(f)
 
     def k_get_features(self,end,daylist):
+        M = 9
         N = 21
-        k = [0] * (2*N + 2*N/3)
+        k = [0] * (M + N + (M + N)/3)
         weekend = Week()
         for day in daylist:
             idx = weekend.diff(end, day)
-            if idx >= -N and idx < N:
+            #print "end",end, day,idx
+            if idx >= -N and idx < M:
                 idx = idx + N
                 k[idx] = 1 + k[idx]
-                k[idx/3+2*N] = 1 + k[idx/3+2*N]
+                k[idx/3 + N + M] = 1 + k[idx/3 + N + M]
         return ",".join(["%d" % i for i in k])
 
 if __name__ == "__main__":

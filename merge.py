@@ -7,7 +7,7 @@
 
 __revision__ = '0.1'
 fins = []
-fins.append([open("aveenv/merge.csv"), 1.1])
+#fins.append([open("aveenv/merge.csv"), 1.1])
 fins.append([open("xgboost/merge.csv"), 1])
 fins.append([open("subenv/merge.csv"), 1])
 fins.append([open("v1subenv/merge.csv"), 1.2])

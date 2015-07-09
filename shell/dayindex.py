@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: GB2312 -*-
-# Last modified: 
+# Last modified:
 
 """docstring
 """
@@ -17,7 +17,8 @@ class CAlldayIndex:
         f = [0] * len(self.cdict)
         for day in days:
             if len(day) > 1:
-                f[self.cdict[day]] = 1
+                idx = self.cdict[day]
+                f[idx] = 1 + f[idx]
         return ",".join(["%d" % k for k in f])
 
 if __name__ == "__main__":

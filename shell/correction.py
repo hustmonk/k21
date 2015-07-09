@@ -98,11 +98,13 @@ class Correction:
                     nodropdays1.append(weekend.getnd(lastday, i))
         if self.debug:
             print "dropdays",dropdays
+            print "dropdays1",dropdays1
             print "nodropdays", nodropdays
+            print "nodropdays1", nodropdays1
             print "lostdays",lostdays
         k1 = self.k_get_features(_end, dropdays)
         k2 = self.k_get_features(_end, nodropdays)
-        k3 = self.k_get_features(_end, lostdays)
+        k3 = self.k_get_features(_end, lostdays + nodropdays)
         k4 = self.k_get_features(_end, dropdays1 + dropdays)
         k5 = self.k_get_features(_end, nodropdays1 + nodropdays)
         if self.debug:
@@ -117,8 +119,8 @@ class Correction:
         return ",".join(f), nodropdays
 
     def k_get_features(self,end,daylist):
-        M = 15
-        N = 21
+        M = 9
+        N = 15
         k = [0] * (M + N + (M + N)/3)
         weekend = Week()
         for day in daylist:

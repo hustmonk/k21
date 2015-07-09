@@ -11,6 +11,7 @@ from label import *
 from cdate import *
 from lastday import *
 from weekend import *
+import sys
 class Correction:
     def __init__(self, enrollmentfile,debug = False):
         self.enrollment = Enrollment("../data/merge/enrollment.csv")
@@ -32,8 +33,10 @@ class Correction:
         nodropnum = 0
         weekend = Week()
         _end = self.cdate.get_end(course_id)
+        days = self.lastdayinfo.get_days(id)
         if self.debug:
-            print id,_end,course_id
+            print "id,_end,course_id,days"
+            print id,_end,course_id,days
         lostdays = []
         for _id in whole_enr_ids:
             if _id == id:
@@ -50,6 +53,7 @@ class Correction:
             for i in range(1, diff+1):
                 lostdays.append(weekend.getnd(lastday, i))
             if self.debug:
+                print "lastday,days,end,lostdays"
                 print lastday,days,end,lostdays
         for _id in enr_ids:
             if _id == id:
@@ -58,16 +62,39 @@ class Correction:
             _username, _course_id = self.enrollment.enrollment_info.get(_id)
             days = self.lastdayinfo.get_days(_id)
             end = self.cdate.get_end(_course_id)
+            if self.debug:
+                print "_id,_y,days,end"
+                print _id,_y,days,end
             if _y == "1":
                 for i in range(1, 11):
                     nday = weekend.getnd(end, i)
                     dropdays.append(nday)
                 dropnum = dropnum + 1
+                if len(days) < 1:
+                    continue
+                lastday = days[-1]
+                diff = weekend.diff(end, lastday)
+                for i in range(1, diff+1):
+                    if self.debug:
+                        print weekend.getnd(lastday, i)
+                    dropdays.append(weekend.getnd(lastday, i))
             else:
                 nodropnum = nodropnum + 1
                 for i in range(1, 11):
                     nday = weekend.getnd(end, i)
                     nodropdays.append(nday)
+                if len(days) < 1:
+                    continue
+                lastday = days[-1]
+                diff = weekend.diff(end, lastday)
+                for i in range(1, diff+1):
+                    if self.debug:
+                        print weekend.getnd(lastday, i)
+                    nodropdays.append(weekend.getnd(lastday, i))
+        if self.debug:
+            print "dropdays",dropdays
+            print "nodropdays", nodropdays
+            print "lostdays",lostdays
         k1 = self.k_get_features(_end, dropdays)
         k2 = self.k_get_features(_end, nodropdays)
         k3 = self.k_get_features(_end, lostdays)
@@ -92,10 +119,16 @@ class Correction:
                 idx = idx + N
                 k[idx] = 1 + k[idx]
                 k[idx/3 + N + M] = 1 + k[idx/3 + N + M]
-        return ",".join(["%d" % i for i in k])
+        k = ",".join(["%d" % i for i in k])
+        if self.debug:
+            print k
+        return k
 
 if __name__ == "__main__":
     cor = Correction("../data/train/enrollment_train.csv",True)
-    print cor.get_features("15660")
+    id="4936"
+    print cor.get_features(sys.argv[1])
+    """
     for i in range(1, 100):
         print cor.get_features(str(i))
+    """

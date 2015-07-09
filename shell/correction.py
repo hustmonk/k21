@@ -114,7 +114,7 @@ class Correction:
         f.append(k3)
         f.append(k4)
         f.append(k5)
-        return ",".join(f), nodropdays
+        return ",".join(f), nodropdays + nodropdays1
 
     def k_get_features(self,end,daylist):
         M = 15

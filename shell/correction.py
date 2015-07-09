@@ -29,6 +29,8 @@ class Correction:
         whole_enr_ids = self.enrollment.user_enrollment_id.get(username, [])
         dropdays = []
         nodropdays = []
+        dropdays1 = []
+        nodropdays1 = []
         dropnum = 0
         nodropnum = 0
         weekend = Week()
@@ -80,7 +82,7 @@ class Correction:
                 for i in range(1, diff+1):
                     if self.debug:
                         print weekend.getnd(lastday, i)
-                    dropdays.append(weekend.getnd(lastday, i))
+                    dropdays1.append(weekend.getnd(lastday, i))
             else:
                 nodropnum = nodropnum + 1
                 for i in range(1, 11):
@@ -93,7 +95,7 @@ class Correction:
                 for i in range(1, diff+1):
                     if self.debug:
                         print weekend.getnd(lastday, i)
-                    nodropdays.append(weekend.getnd(lastday, i))
+                    nodropdays1.append(weekend.getnd(lastday, i))
         if self.debug:
             print "dropdays",dropdays
             print "nodropdays", nodropdays
@@ -101,6 +103,8 @@ class Correction:
         k1 = self.k_get_features(_end, dropdays)
         k2 = self.k_get_features(_end, nodropdays)
         k3 = self.k_get_features(_end, lostdays)
+        k4 = self.k_get_features(_end, dropdays1 + dropdays)
+        k5 = self.k_get_features(_end, nodropdays1 + nodropdays)
         if self.debug:
             print k3,"k3"
         f = [dropnum, nodropnum, nodropnum/(dropnum+nodropnum+1.0), dropnum/(dropnum+nodropnum+1.0)]
@@ -108,10 +112,12 @@ class Correction:
         f.append(k1)
         f.append(k2)
         f.append(k3)
+        f.append(k4)
+        f.append(k5)
         return ",".join(f), nodropdays
 
     def k_get_features(self,end,daylist):
-        M = 9
+        M = 15
         N = 21
         k = [0] * (M + N + (M + N)/3)
         weekend = Week()

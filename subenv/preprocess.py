@@ -12,7 +12,7 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 kmax = {}
 filter_dict = {}
-N = 1200
+N = 1800
 def fit(courses, X):
     ksum = {}
     kcount = {}

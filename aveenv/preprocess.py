@@ -74,7 +74,7 @@ def read(filename, isFit):
         fout.write("%d,%s,%s,%s\n" % (Y[i],ids[i],courses[i],",".join(["%.2f" % k  for k in x]) ))
     fout.close()
 read("train.txt", 1)
-read("train2.txt", 0)
-read("train1.txt", 0)
+#read("train2.txt", 0)
+#read("train1.txt", 0)
 read("test.txt", 0)
 

@@ -15,15 +15,15 @@ filter_dict = {}
 def fit(courses, X):
     ksum = {}
     kcount = {}
-    kcount["ZZ"] = [0] * 1000
+    kcount["ZZ"] = [0] * 1800
 
-    ksum["ZZ"] = [0] * 1000
+    ksum["ZZ"] = [0] * 1800
     for j in range(len(X)):
         x = X[j]
         course = courses[j]
         if course not in ksum:
-            kcount[course] = [0] * 1000
-            ksum[course] = [0] * 1000
+            kcount[course] = [0] * 1800
+            ksum[course] = [0] * 1800
         for i in range(len(x)):
             if x[i] > 0:
                 ksum[course][i] = ksum[course][i] + x[i]
@@ -32,24 +32,29 @@ def fit(courses, X):
             kcount["ZZ"][i] = kcount["ZZ"][i] + 1
     for (course, sumx) in ksum.items():
         countx = kcount[course]
-        kmax[course] = [0] * 1000
-        for i in range(1000):
+        kmax[course] = [0] * 1800
+        for i in range(1800):
             if sumx[i] == 0:
                 kmax[course][i] = 0
             else:
                 kmax[course][i] = sumx[i] / countx[i]
-    for i in range(1000):
+    for i in range(1800):
         isTrans = False
         cc = 0
+        buf = []
         for (course, maxx) in kmax.items():
             if maxx[i] < 0.001:
                 continue
             if maxx[i] > kmax["ZZ"][i] * 1.1 or maxx[i] < kmax["ZZ"][i] * 0.9:
+                buf.append(maxx[i])
                 isTrans = True
                 cc += 1
+        if len(buf) < 10 and len(buf) >= 2:
+            print i,kmax["ZZ"][i],buf
         if cc < 2:
             filter_dict[i] = 1
     print len(filter_dict)
+    exit(-1)
 
 def transfer(course, x):
     x1 = []

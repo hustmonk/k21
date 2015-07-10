@@ -39,6 +39,22 @@ class Correction:
         if self.debug:
             print "id,_end,course_id,days"
             print id,_end,course_id,days
+        kws = [0] * 30
+        for _id in whole_enr_ids:
+            _username, _course_id = self.enrollment.enrollment_info.get(_id)
+            days = self.lastdayinfo.get_days(_id)
+            start = self.cdate.get_start(_course_id)
+            if self.debug:
+                print start,days
+            for day in days:
+                diff = weekend.diff(day, start)
+                if self.debug:
+                    print diff,day
+                if diff >= 0 and diff < 30:
+                    kws[diff] = kws[diff] + 1
+        kws = ",".join(["%d" % k for k in kws])
+        if self.debug:
+            print kws
         lostdays = []
         for _id in whole_enr_ids:
             if _id == id:
@@ -116,6 +132,7 @@ class Correction:
         f.append(k3)
         f.append(k4)
         f.append(k5)
+        f.append(kws)
         return ",".join(f), nodropdays + nodropdays1
 
     def k_get_features(self,end,daylist):

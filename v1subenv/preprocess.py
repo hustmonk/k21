@@ -54,7 +54,6 @@ def fit(courses, X):
         if cc < 2:
             filter_dict[i] = 1
     print len(filter_dict)
-    exit(-1)
 
 def transfer(course, x):
     x1 = []

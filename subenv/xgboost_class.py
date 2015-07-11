@@ -54,10 +54,10 @@ class Model():
             #cole:0.6|mint:6|sube:0.8|etaa:0.03|gama:10|lama:6 0.898634 0.898749 0.898597
             #cole:0.5|mint:6|sube:0.8|etaa:0.03|gama:12|lama:2 0.900278 0.900303 0.900139
             param = {'max_depth':10, "min_child_weight":6, "subsample":0.85+self.getrand()*0.01,
-                    'eta':0.03+self.getrand()*0.002, 'silent':1, 'objective':'binary:logistic',
-                    "lambda":3+self.getrand()*0.1,"gamma":12+self.getrand()*0.2,
+                    'eta':0.03+self.getrand()*0.001, 'silent':1, 'objective':'binary:logistic',
+                    "lambda":3+self.getrand()*0.1,"gamma":12+self.getrand()*0.1,
                     "colsample_bytree":0.5+self.getrand()*0.01,"seed":seed,
-                    'nthread':4,'eval_metric':'auc'}
+                    'nthread':4,'eval_metric':'auc',"scale_pos_weight":0.85}
         plst = param.items()
         print plst
         sys.stdout.flush()

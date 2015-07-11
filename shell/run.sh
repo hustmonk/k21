@@ -1,10 +1,11 @@
 set -e
-command="2"
+command="1"
 
 function valid() {
     echo "valid"
     python features.py ../data/train2/log_train.csv ../data/train2/enrollment_train.csv train2.txt &
     python features.py ../data/train1/log_train.csv ../data/train1/enrollment_train.csv train1.txt 
+    #python features.py ../data/train1/log_train.csv ../data/enrollment_train.csv.expand  train.txt.expand 
     python learn.py train1.txt train2.txt valid.txt 1
 }
 function sub() {

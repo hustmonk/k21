@@ -120,13 +120,22 @@ class Correction:
             print "lostdays",lostdays
         k1 = self.k_get_features(_end, dropdays)
         k2 = self.k_get_features(_end, nodropdays)
-        k3 = self.k_get_features(_end, lostdays + nodropdays)
+        k3 = self.k_get_features(_end, lostdays + dropdays)
         k4 = self.k_get_features(_end, dropdays1 + dropdays)
         k5 = self.k_get_features(_end, nodropdays1 + nodropdays)
         if self.debug:
             print k3,"k3"
         f = [dropnum, nodropnum, nodropnum/(dropnum+nodropnum+1.0), dropnum/(dropnum+nodropnum+1.0)]
-        f = ["%s" % k for k in f]
+        excited = [0] * 5
+        noexcited = [0] * 5
+        if dropnum > 4:
+            dropnum = 4
+        if nodropnum > 4:
+            nodropnum = 4
+        excited[dropnum] = 1
+        noexcited[nodropnum] = 1
+
+        f = ["%s" % k for k in (f + excited + noexcited)]
         f.append(k1)
         f.append(k2)
         f.append(k3)
@@ -136,9 +145,9 @@ class Correction:
         return ",".join(f), nodropdays + nodropdays1
 
     def k_get_features(self,end,daylist):
-        M = 9
-        N = 15
-        k = [0] * (M + N + (M + N)/3)
+        M = 12
+        N = 12
+        k = [0] * (M + N + (M + N)/3 + (M+N)/6)
         weekend = Week()
         for day in daylist:
             idx = weekend.diff(end, day)
@@ -147,6 +156,7 @@ class Correction:
                 idx = idx + N
                 k[idx] = 1 + k[idx]
                 k[idx/3 + N + M] = 1 + k[idx/3 + N + M]
+                k[idx/6 + (N + M) * 4 / 3 ] = 1 + k[idx/6 + (N + M) * 4 / 3]
         k = ",".join(["%d" % i for i in k])
         if self.debug:
             print k
